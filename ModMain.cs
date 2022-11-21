@@ -38,7 +38,7 @@ using Assets.Scripts.Data.Skins;
 using Assets.MainMenuWorld.Scripts;
 using Assets.Scripts.Unity.UI_New.Main.WorldItems;
 [assembly:MelonGame("Ninja Kiwi","BloonsTD6")]
-[assembly:MelonInfo(typeof(Mothership.ModMain),"Mothership","1.0.0","Silentstorm")]
+[assembly:MelonInfo(typeof(Mothership.ModMain),"Mothership","1.0.1","Silentstorm")]
 namespace Mothership{
     public class ModMain:BloonsTD6Mod{
         public static Il2CppStructArray<AreaType>flyingAreaType=new(4);
@@ -189,7 +189,6 @@ namespace Mothership{
             }
         }
         public static void PlaySound(string name){
-            Log(name);
             Game.instance.audioFactory.PlaySoundFromUnity(null,name,"FX",1,1);
         }
         public static void PlayAnimation(UnityDisplayNode udn,string anim){
