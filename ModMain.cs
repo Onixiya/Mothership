@@ -69,7 +69,7 @@ namespace Mothership{
                         //read comment in mothership.cs
                         towerTypes[type.Name].SoundNames=(Dictionary<string,string>)type.GetField("SoundNames").GetValue(null);
                     }
-                }catch{}
+                }catch{}                     
             }
             flyingAreaType[0]=AreaType.land;
             flyingAreaType[1]=AreaType.water;

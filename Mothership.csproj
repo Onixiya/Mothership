@@ -103,6 +103,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\BloonsTD6\MelonLoader\Managed\UnityEngine.InputModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\BloonsTD6\MelonLoader\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\BloonsTD6\MelonLoader\Managed\UnityEngine.UI.dll</HintPath>
@@ -124,7 +128,7 @@
     <Compile Include="HeroScreen.cs" />
     <Compile Include="ModMain.cs" />
     <Compile Include="SC2Tower.cs" />
-    <None Include="MainMenu.cs" />
+    <Compile Include="MainMenu.cs" />
     <Compile Include="Towers\Carrier.cs" />
     <Compile Include="Towers\Destroyer.cs" />
     <Compile Include="Towers\Interceptor.cs" />
@@ -149,6 +153,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Icon.png" />
     <EmbeddedResource Include="ModHelperData.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Credits.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
