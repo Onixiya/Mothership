@@ -113,6 +113,16 @@ namespace Mothership.Bundles {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] miscmainmenu {
+            get {
+                object obj = ResourceManager.GetObject("miscmainmenu", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] mothership {
             get {
                 object obj = ResourceManager.GetObject("mothership", resourceCulture);

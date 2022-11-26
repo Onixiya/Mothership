@@ -31,14 +31,8 @@ using Assets.Scripts.Simulation.Towers.Behaviors;
 using Assets.Scripts.Simulation.Towers.Weapons.Behaviors;
 using Assets.Scripts.Models.Towers.Behaviors.Attack.Behaviors;
 using Assets.Scripts.Models.GenericBehaviors;
-using Assets.Scripts.Models.Towers.Behaviors.Emissions;
-using Assets.Scripts.Models.Profile;
-using Assets.Scripts.Data;
-using Assets.Scripts.Data.Skins;
-using Assets.MainMenuWorld.Scripts;
-using Assets.Scripts.Unity.UI_New.Main.WorldItems;
-[assembly:MelonGame("Ninja Kiwi","BloonsTD6")]
-[assembly:MelonInfo(typeof(Mothership.ModMain),"Mothership","1.0.1","Silentstorm")]
+[assembly: MelonGame("Ninja Kiwi","BloonsTD6")]
+[assembly: MelonInfo(typeof(Mothership.ModMain),"Mothership","1.0.1","Silentstorm")]
 namespace Mothership{
     public class ModMain:BloonsTD6Mod{
         public static Il2CppStructArray<AreaType>flyingAreaType=new(4);
@@ -60,7 +54,10 @@ namespace Mothership{
                     break;
             }
         }
-        public override void OnInitialize(){
+        public static void SaveIl2CppObj(string fileName,Il2CppSystem.Object obj){
+            System.IO.File.WriteAllText(fileName,Il2CppNewtonsoft.Json.JsonConvert.SerializeObject(obj,Il2CppNewtonsoft.Json.Formatting.Indented,null));
+        }
+        public override void OnInitialize() {
             mllog=LoggerInstance;
             foreach(Type type in MelonAssembly.Assembly.GetTypes()){
                 try{

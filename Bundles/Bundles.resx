@@ -133,6 +133,9 @@
   <data name="mainmenu" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>mainmenu.bundle;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="miscmainmenu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>miscmainmenu.bundle;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="mothership" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>mothership.bundle;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
