@@ -1,4 +1,5 @@
-bin/
-obj/
-.vs/
-Models/
+bin
+obj
+.vs
+Models
+MothershipProject

@@ -1,0 +1,27 @@
+﻿using UnityEngine;
+namespace Mothership.NewMainMenu{
+    [HarmonyPatch(typeof(OpenChest),"Start")]
+    public class OpenChestStart_Patch{
+        public static AudioClip ClickClip;
+        public static AudioClip OpenClip;
+        [HarmonyPrefix]
+        public static void Prefix(ref OpenChest __instance){
+            if(__instance.gameObject.name!="Archives-Model"){
+                ClickClip=uObject.Instantiate(__instance.clickSound);
+                OpenClip=uObject.Instantiate(__instance.openChestSound);
+            }else{
+                __instance.clickSound=ClickClip;
+                __instance.openChestSound=OpenClip;
+            }
+        }
+    }
+    [HarmonyPatch(typeof(OpenChest),"OnInteract")]
+    public class OpenChestOpenChest_Patch{
+        [HarmonyPostfix]
+        public static void Postfix(ref OpenChest __instance){
+            if(__instance.gameObject.name=="Archives-Model"){
+                __instance.OpenDailyRewardUIAsync();
+            }
+        }
+    }
+}

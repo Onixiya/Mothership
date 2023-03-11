@@ -1,0 +1,182 @@
+﻿using Assets.Scripts.Unity.Menu;
+using Assets.Scripts.Unity.UI_New;
+using Assets.Scripts.Unity.UI_New.Main;
+using Assets.Scripts.Unity.UI_New.Main.WorldItems;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Collections;
+using Assets.Scripts.Unity.UI_New.InGame;
+using Assets.Scripts.Unity.Display;
+using Assets.Scripts.Unity.Gamepad;
+using TMPro;
+//to avoid conflict with the in game MainMenu class, namespace is NewMainMenu
+namespace Mothership.NewMainMenu{
+    public class TalDarimMainMenu{
+        public static SC2Tower SC2Data=new(Bundles.Bundles.mainmenu);
+        public static List<GameObject>MenuObjects=new();
+        public static GameObject BackgroundObj;
+        [HarmonyPatch(typeof(InteractionChecker),"Update")]
+        public class InteractionCheckerUpdate_Patch{
+            public static Camera Camera;
+            [HarmonyPrefix]
+            public static bool Prefix(ref InteractionChecker __instance){
+		        if(InputSystemController.GetMouseButtonDown(0)){
+		            Vector2 mousePosition=InputSystemController.MousePosition;
+                    Vector3 v3=new(mousePosition.x/Screen.width,mousePosition.y/Screen.height,0);
+		            Ray ray=Camera.ViewportPointToRay(v3);
+                    if(Physics.Raycast(ray,out RaycastHit hit)){
+                        GameObject gObj=hit.collider.gameObject;
+                        if(gObj.HasComponent<CustomInteractable>()){
+                            gObj.GetComponent<CustomInteractable>().Interact();
+                        }
+                        if(gObj.HasComponent<InteractableObject>()){
+                            gObj.GetComponent<InteractableObject>().OnInteract();
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        [HarmonyPatch(typeof(SelectableMesh),"Awake")]
+        public class SelectableMeshAwake_Patch{
+            [HarmonyPrefix]
+            public static void Prefix(ref SelectableMesh __instance){
+                SelectableMesh selectableMesh=__instance;
+                if(MenuObjects.Any(a=>a.name==selectableMesh.name)){
+                    __instance.meshRenders=new();
+                    __instance.config=SelectableMeshConfig.CreateInstance<SelectableMeshConfig>();
+                    SelectableMeshConfig config=__instance.config;
+                    config.hoverScale=1;
+                    config.overObjectShader=__instance.GetComponentInChildren<SkinnedMeshRenderer>().material.shader;
+                    config.pressedScale=1;
+                    config.restScale=1;
+                    config.standardObjectShader=config.overObjectShader;
+                }
+            }
+        }
+        [HarmonyPatch(typeof(OpenGameEventsScreen),"ShowDialog")]
+        public class OpenGameEventsScreenShowDialog_Patch{
+            [HarmonyPrefix]
+            public static bool Prefix(OpenGameEventsScreen __instance){
+                if(MenuObjects.Any(a=>a.name==__instance.name)){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }
+        [HarmonyPatch(typeof(MainMenu),"Open")]
+        public class MainMenuOpen_Patch{
+            [HarmonyPostfix]
+            public static void Postfix(){
+                if(CustomMenu){
+                    if(!SceneManager.GetSceneByName("TalDarimMainMenu").IsValid()){
+                        SceneManager.LoadScene(SC2Data.Bundle.GetAllScenePaths()[0],LoadSceneMode.Additive);
+                        if(SceneManager.GetSceneByName("MainMenuWorld").IsValid()){
+                            GameObject questMonkey=uObject.FindObjectOfType<OpenGameEventsScreen>().gameObject.transform.parent.gameObject;
+                            //only root objects are allowed to be moved between scenes, must detach it from the parent
+                            questMonkey.transform.parent.DetachChildren();
+                            SceneManager.MoveGameObjectToScene(questMonkey,SceneManager.GetSceneByName("TalDarimMainMenu"));
+                        }
+                        MelonCoroutines.Start(Setup());
+                    }
+                    if(SceneManager.GetSceneByName("MainMenuWorld").IsValid()){
+                        SceneManager.UnloadScene("MainMenuWorld");
+                    }
+                    uObject.FindObjectOfType<CommonBackgroundScreen>().EnableClearObject(false);
+                }
+            }
+            //done in a coroutine so that all the objects are set up, scenes need a single frame to get ready
+            public static IEnumerator Setup(){
+                yield return null;
+                foreach(GameObject gObj in SceneManager.GetSceneByName("TalDarimMainMenu").GetRootGameObjects()){
+                    MenuObjects.Add(gObj);
+                    switch(gObj.name){
+                        case"Pylon-Model":
+                            gObj.AddComponent<PylonBehavior>();
+                            break;
+                        case"Stargate-Model":
+                            gObj.AddComponent<StargateBehavior>();
+                            break;
+                        case"Gateway-Model":
+                            gObj.AddComponent<GatewayBehavior>();
+                            break;
+                        case"Archives-Model":
+                            gObj.AddComponent<OpenChest>();
+                            gObj.AddComponent<SelectableMesh>();
+                            break;
+                        case"QuestMonkey":
+                            gObj.transform.position=new(106f,0,-62f);
+                            break;
+                        case"Banner-Model":
+                            OpenGameEventsScreen eventMonkey=MenuObjects.First(a=>a.name=="QuestMonkey").GetComponentInChildren<OpenGameEventsScreen>();
+                            uObject.Destroy(eventMonkey.transform.GetChild(0).gameObject);
+                            uObject.Destroy(eventMonkey.transform.GetChild(1).gameObject);
+                            gObj.transform.SetParent(eventMonkey.transform);
+                            gObj.transform.localPosition=new(0,0,0);
+                            eventMonkey.eventMonkeyAnimator=gObj.GetComponent<Animator>();
+                            eventMonkey.transform.localPosition=new(0,0,0);
+                            uObject.Destroy(eventMonkey.coopEventMonkey);
+                            eventMonkey.coopEventMonkey=gObj.transform.GetChild(3).gameObject;
+                            eventMonkey.coopEventMonkey.AddComponent<ZealotBehavior>();
+                            BoxCollider collider=eventMonkey.GetComponent<BoxCollider>();
+                            if(eventMonkey.currState==OpenGameEventsScreen.State.coop){
+                                eventMonkey.coopEventMonkey.active=true;
+                                collider.center=new(0,30,20);
+                                collider.size=new(1,70,70);
+                            }else{
+                                eventMonkey.coopEventMonkey.active=false;
+                                collider.center=new(0,30,0);
+                                collider.size=new(1,70,40);
+                            }
+                            eventMonkey.exclamationPointAnimator.gameObject.active=false;
+                            eventMonkey.questMonkeyPulse.active=false;
+                            break;
+                        case"Walls":
+                            foreach(var child in gObj.GetComponentsInChildren<Light>()){
+                                child.gameObject.AddComponent<TalDarimHexScroll>();
+                            }
+                            break;
+                        case"PhoenixFlyIn":
+                            gObj.AddComponent<PhoenixFlyInComponent>();
+                            break;
+                    }
+                }
+                InteractionCheckerUpdate_Patch.Camera=MenuObjects.First(a=>a.name=="MainCamera").GetComponent<Camera>();
+                InteractionCheckerUpdate_Patch.Camera.gameObject.AddComponent<InteractionChecker>();
+                BackgroundObj=MenuObjects.First(a=>a.name=="TalDarimBackgroundImage");
+            }
+        }
+        [HarmonyPatch(typeof(CommonBackgroundScreen),"GetMenuBGData")]
+        public class CommonBackgroundScreenGetMenuBGData_Patch{
+            [HarmonyPostfix]
+            public static void Postfix(ref CommonBackgroundScreen __instance){
+                if(__instance.mainMenuWorldBlurredImg.texture.name!="TaldarimBackgroundTexture"&&SceneManager.GetSceneByName("TalDarimMainMenu").IsValid()){
+                    __instance.mainMenuWorldBlurredImg.texture=BackgroundObj.GetComponent<RawImage>().texture;
+                    __instance.mainMenuWorldBlurredImg.gameObject.AddComponent<TalDarimHexScroll>();
+                }
+            }
+        }
+        [HarmonyPatch(typeof(MenuManager),"UnloadSceneAsync")]
+        public class MenuManagerUnloadSceneAsync_Patch{
+            [HarmonyPrefix]
+            public static void Prefix(ref string sceneName){
+                if(CustomMenu){
+                    if(sceneName=="MainMenuWorld"){
+                        sceneName="TalDarimMainMenu";
+                        if(SceneManager.GetSceneByName(sceneName).IsValid()){
+                            SceneManager.UnloadScene(sceneName);
+                        }
+                    }
+                }
+            }
+        }
+        //injector really isn't liking me when i base the classes of interactableobject, i think its abstract
+        [RegisterTypeInIl2Cpp]
+        public abstract class CustomInteractable:MonoBehaviour{
+            public CustomInteractable(IntPtr ptr):base(ptr){}
+            public virtual void Interact(){}
+        }
+    }
+}

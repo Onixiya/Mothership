@@ -1,50 +1,65 @@
-﻿using Assets.Scripts.Models.GenericBehaviors;
-using Assets.Scripts.Models.Towers.Behaviors;
-using Assets.Scripts.Models.Towers.Projectiles;
-using Assets.Scripts.Models.Towers.Projectiles.Behaviors;
-namespace Mothership{
-    public class Destroyer:ModTower{
-        public override string DisplayName=>"Destroyer";
-        public override string BaseTower=>"DartMonkey";
-        public override int Cost=>0;
-        public override bool DontAddToShop=>true;
-        public override int TopPathUpgrades=>0;
-        public override int MiddlePathUpgrades=>0;
-        public override int BottomPathUpgrades=>0;
-        public override string TowerSet=>"Primary";
-        public override string Description=>"whatthefuckdoyouthinkyouaredoingreadingthislol";
-        public override SpriteReference PortraitReference=>new(){guidRef="Ui[Destroyer-Portrait]"};
-        public static Dictionary<string,string>SoundNames=new(){{"Destroyer","destroyer-"}};
-        public static SC2Tower SC2Data=new(Bundles.Bundles.destroyer,/*null,*/null,null,null,Create,Select);
-        public override void ModifyBaseTowerModel(TowerModel destroyer){
-            DisplayModel display=destroyer.GetBehavior<DisplayModel>();
-            AttackModel attack=destroyer.GetAttackModel();
-            destroyer.radius=15;
+﻿namespace Mothership{
+    public class Destroyer:SC2Tower{
+        public override string Name=>"Destroyer";
+        public override bool AddToShop=>false;
+        public override Faction TowerFaction=>Faction.Protoss;
+        public override string Description=>"no";
+		public override bool Upgradable=>false;
+		public override bool ShowUpgradeMenu=>false;
+		public override Dictionary<string,Il2CppSystem.Type>Components=>new(){{"Destroyer-Prefab",Il2CppType.Of<DestroyerBehaviour>()}};
+		[RegisterTypeInIl2Cpp]
+		public class DestroyerBehaviour:MonoBehaviour{
+			public DestroyerBehaviour(IntPtr ptr):base(ptr){}
+			int SelectSound=0;
+			public void PlaySelectSound(){
+				if(SelectSound>5){
+					SelectSound=0;
+				}
+				SelectSound+=1;
+				PlaySound("Destroyer-Select"+SelectSound);
+			}
+		}
+		public override TowerModel[]GenerateTowerModels(){
+			return new TowerModel[]{
+				Base()
+			};
+		}
+        public TowerModel Base(){
+			TowerModel destroyer=gameModel.GetTowerFromId("DartMonkey").Clone<TowerModel>();
+			destroyer.name=Name;
+			destroyer.baseId=Name;
+			destroyer.radius=15;
             destroyer.range=65;
-            destroyer.areaTypes=flyingAreaType;
             destroyer.dontDisplayUpgrades=true;
-            destroyer.display=new(){guidRef="Destroyer-Destroyer-Prefab"};
-            destroyer.AddBehavior(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
-            display.display=new(){guidRef=destroyer.display.guidRef};
+            destroyer.display=new(){guidRef="Destroyer-Prefab"};
+			destroyer.upgrades=new(0);
+			List<Model>destroyerBehav=destroyer.behaviors.ToList();
+			destroyerBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
+            DisplayModel display=destroyerBehav.GetModel<DisplayModel>();
+			display.display=new(){guidRef=destroyer.display.guidRef};
             display.positionOffset=new(0,0,190);
-            attack.range=destroyer.range;
-            attack.weapons[0]=Game.instance.model.GetTowerFromId("BallOfLightTower").GetAttackModel().weapons[0].Duplicate();
-            ProjectileModel proj=attack.weapons[0].projectile;
-            proj.GetDamageModel().damage=0.6f;
-            proj.AddBehavior(Game.instance.model.GetTowerFromId("BombShooter").GetAttackModel().weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>().Duplicate());
-            proj.GetBehavior<CreateProjectileOnContactModel>().projectile=Game.instance.model.GetTowerFromId("Druid-200").GetAttackModel().weapons[1].projectile.Duplicate();
-            ProjectileModel beam1=proj.GetBehavior<CreateProjectileOnContactModel>().projectile;
-            LightningModel lightning=beam1.GetBehavior<LightningModel>();
+            AttackModel destroyerAttack=destroyerBehav.GetModel<AttackModel>();
+            destroyerAttack.range=destroyer.range;
+            destroyerAttack.weapons[0]=gameModel.GetTowerFromId("BallOfLightTower").behaviors.GetModel<AttackModel>().weapons[0].Clone<WeaponModel>();
+            ProjectileModel destroyerProj=destroyerAttack.weapons[0].projectile;
+			List<Model>destroyerProjBehav=destroyerProj.behaviors.ToList();
+            destroyerProjBehav.GetModel<DamageModel>().damage=0.6f;
+            destroyerProjBehav.Add(gameModel.GetTowerFromId("BombShooter").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<CreateProjectileOnContactModel>());
+            destroyerProjBehav.GetModel<CreateProjectileOnContactModel>().projectile=gameModel.GetTowerFromId("Druid-200").behaviors.GetModel<AttackModel>().weapons[1].projectile.Clone<ProjectileModel>();
+            Il2CppReferenceArray<Model>beamBehav=destroyerProjBehav.GetModel<CreateProjectileOnContactModel>().projectile.behaviors;
+            LightningModel lightning=beamBehav.GetModel<LightningModel>();
             lightning.splits=1;
             lightning.splitRange=10;
-            beam1.GetDamageModel().damage=0.45f;
-            beam1.GetBehavior<CreateLightningEffectModel>().lifeSpan=0.1f;
+            beamBehav.GetModel<DamageModel>().damage=0.45f;
+            beamBehav.GetModel<CreateLightningEffectModel>().lifeSpan=0.1f;
+			destroyer.behaviors=destroyerBehav.ToArray();
+			return destroyer;
         }
         public static void Create(){
-            PlaySound("destroyer-birth");
+            PlaySound("Destroyer-Birth");
         }
-        public static void Select(Tower tower){
-            tower.Node.graphic.GetComponent<SC2Sound>().PlaySelectSound();
+        public override void Select(Tower tower){
+            tower.Node.graphic.GetComponent<DestroyerBehaviour>().PlaySelectSound();
         }
     }
 }

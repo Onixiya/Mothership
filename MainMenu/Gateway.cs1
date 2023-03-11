@@ -1,0 +1,50 @@
+﻿using UnityEngine;
+using System.Collections;
+using static Mothership.NewMainMenu.TalDarimMainMenu;
+using UnhollowerBaseLib.Attributes;
+
+namespace Mothership.NewMainMenu{
+        [RegisterTypeInIl2Cpp]
+        public class GatewayBehavior:CustomInteractable{
+            public GatewayBehavior(IntPtr ptr):base(ptr){}
+            public Animator AnimCtrl;
+            public Il2CppArrayBase<ParticleSystem>PartSys;
+            public bool Working;
+            public GameObject Slayer;
+            public GameObject SlayerWarp;
+            public void Start(){
+                AnimCtrl=GetComponent<Animator>();
+                PartSys=GetComponentsInChildren<ParticleSystem>();
+                Slayer=transform.GetChild(6).gameObject;
+                Slayer.active=false;
+                SlayerWarp=transform.GetChild(7).gameObject;
+                SlayerWarp.active=false;
+                SlayerWarp.transform.localPosition=Slayer.transform.localPosition;
+            }
+            public override void Interact(){
+                if(!Working){
+                    MelonCoroutines.Start(Work());
+                }
+            }
+            [HideFromIl2Cpp]
+            public IEnumerator Work(){
+                Working=true;
+                AnimCtrl.Play("Gateway-TransformStart");
+                foreach(ParticleSystem partSys in PartSys){
+                    partSys.Play();
+                }
+                yield return new WaitForSeconds(3);
+                PlaySound("gateway-clip");
+                SlayerWarp.active=true;
+                yield return new WaitForSeconds(7);
+                SlayerWarp.active=false;
+                Slayer.active=true;
+                AnimCtrl.Play("Gateway-TransformEnd");
+                PlaySound("slayer-clip");
+                yield return new WaitForSeconds(3.3f);
+                PlaySound("slayer-blink");
+                Slayer.active=false;
+                Working=false;
+            }
+        }
+}

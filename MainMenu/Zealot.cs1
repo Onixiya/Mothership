@@ -1,0 +1,40 @@
+﻿using UnityEngine;
+using System.Collections;
+using static Mothership.NewMainMenu.TalDarimMainMenu;
+namespace Mothership.NewMainMenu{
+    [RegisterTypeInIl2Cpp]
+    public class ZealotBehavior:MonoBehaviour{
+        public ZealotBehavior(IntPtr ptr):base(ptr){}
+        public Animator animCtrl;
+        public string LastAnim;
+        public float timer;
+        public void Start(){
+            animCtrl=GetComponent<Animator>();
+        }
+        public void Update(){
+            timer+=Time.deltaTime;
+            if(animCtrl.GetCurrentAnimatorStateInfo(0).IsName("Zealot-Stand1")&&timer>7){
+                timer=0;
+                int rand=new System.Random().Next(1,101);
+                Log(rand+" "+LastAnim);
+                if(rand==1&&LastAnim!="Dance"){
+                    LastAnim="Dance";
+                    Log("dance");
+                    animCtrl.CrossFadeInFixedTime("Zealot-Dance",1);
+                    return;
+                }
+                if(rand<50&&LastAnim!="Fidget"){
+                    LastAnim="Fidget";
+                    Log("fidget");
+                    animCtrl.CrossFadeInFixedTime("Zealot-Fidget",1);
+                    return;
+                }
+                if(rand>50&&LastAnim!="Stand"){
+                    LastAnim="Stand";
+                    Log("stand");
+                    animCtrl.CrossFadeInFixedTime("Zealot-Stand3",1);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,58 @@
+﻿using UnityEngine;
+using System.Collections;
+using static Mothership.NewMainMenu.TalDarimMainMenu;
+using UnhollowerBaseLib.Attributes;
+
+namespace Mothership.NewMainMenu{
+    [RegisterTypeInIl2Cpp]
+    public class PylonBehavior:CustomInteractable{
+        public PylonBehavior(IntPtr ptr):base(ptr){}
+        public GameObject BloodHunter;
+        public List<Material>Materials=new();
+        public bool Working;
+        public void Start(){
+            BloodHunter=transform.GetChild(3).gameObject;
+            BloodHunter.active=false;
+            foreach(var renderer in BloodHunter.GetComponentsInChildren<SkinnedMeshRenderer>()){
+                Materials.Add(renderer.material);
+                renderer.material.SetFloat("_Visibility",0);
+            }
+        }
+        public override void Interact(){
+            if(!Working){
+                MelonCoroutines.Start(Work());
+            }
+        }
+        [HideFromIl2Cpp]
+        public IEnumerator Work(){
+            PlaySound("bloodhunter-clip");
+            BloodHunter.active=true;
+            while(BloodHunter.transform.localPosition.x<130){
+                Vector3 local=BloodHunter.transform.localPosition;
+                Log(local.ToString());
+                BloodHunter.transform.localPosition=new(local.x+0.8f,local.y,local.z);
+                float visibility=Materials[0].GetFloat("_Visibility");
+                Log(local.ToString()+" "+visibility+" "+(local.x<-100&&visibility<=1)+" "+(local.x>100&&visibility>=0));
+                //local is only off by 0.4 so doesn't really matter too much
+                if(local.x<-100&&visibility<=1){
+                    Log(1);
+                    foreach(Material material in Materials){
+                        material.SetFloat("_Visibility",visibility+0.05f);
+                    }
+                }
+                if(local.x>100&&visibility>=0){
+                    Log(2);
+                    foreach(Material material in Materials){
+                        material.SetFloat("_Visibility",visibility-0.05f);
+                    }
+                }
+                yield return null;
+            }
+            BloodHunter.transform.localPosition=new(-130,0,-140);
+            foreach(Material material in Materials){
+                material.SetFloat("_Visibility",0);
+            }
+            BloodHunter.active=false;
+        }
+    }
+}

@@ -1,0 +1,24 @@
+﻿using UnityEngine;
+namespace Mothership.NewMainMenu{
+    [RegisterTypeInIl2Cpp]
+        public class TalDarimHexScroll:MonoBehaviour{
+            public TalDarimHexScroll(IntPtr ptr):base(ptr){}
+            RawImage image;
+            Material material;
+            public void Start(){
+                try{
+                    image=GetComponent<RawImage>();
+                    image.uvRect=new(0,0,16,16);
+                }catch{
+                    material=GetComponent<MeshRenderer>().material;
+                }
+            }
+            public void Update(){
+                if(image!=null){
+                    image.uvRect=new(image.uvRect.x+0.001f,0,image.uvRect.width,image.uvRect.height);
+                }else{
+                    material.mainTextureOffset=new(material.mainTextureOffset.x+0.0025f,material.mainTextureOffset.y);
+                }
+            }
+        }
+}

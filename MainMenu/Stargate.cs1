@@ -1,0 +1,106 @@
+﻿using UnityEngine;
+using System.Collections;
+using Assets.Scripts.Unity.UI_New.Main.WorldItems;
+using static Mothership.NewMainMenu.TalDarimMainMenu;
+using UnhollowerBaseLib.Attributes;
+
+namespace Mothership.NewMainMenu{
+    [RegisterTypeInIl2Cpp]
+    public class StargateBehavior:CustomInteractable{
+        public StargateBehavior(IntPtr ptr):base(ptr){}
+        public GameObject DestroyerWarp;
+        public GameObject Destroyer;
+        public GameObject PhoenixWarp;
+        public GameObject Phoenix;
+        public Il2CppSystem.Collections.Generic.List<GameObject>WarpArray=new();
+        public bool Working=false;
+        public void Start(){
+            Destroyer=transform.GetChild(4).gameObject;
+            DestroyerWarp=transform.GetChild(5).gameObject;
+            PhoenixWarp=transform.GetChild(6).gameObject;
+            Phoenix=transform.GetChild(7).gameObject;
+            Destroyer.active=false;
+            Destroyer.transform.localPosition=new(0,72,0);
+            FlyBehavior destroyerFly=Destroyer.AddComponent<FlyBehavior>();
+            destroyerFly.Speed=1;
+            destroyerFly.Rotation=0.5f;
+            destroyerFly.MinRotateDist=250;
+            DestroyerWarp.active=false;
+            DestroyerWarp.transform.localPosition=new(0,72,0);
+            Phoenix.active=false;
+            Phoenix.transform.localPosition=new(0,72,0);
+            FlyBehavior phoenixfly=Phoenix.AddComponent<FlyBehavior>();
+            phoenixfly.Speed=2.5f;
+            phoenixfly.Rotation=1.1f;
+            phoenixfly.MinRotateDist=200;
+            PhoenixWarp.active=false;
+            PhoenixWarp.transform.localPosition=new(0,72,0);
+            foreach(SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>()){
+                if(renderer.name.Contains("WarpMatrix")){
+                    WarpArray.Add(renderer.gameObject);
+                    renderer.gameObject.active=false;
+                }
+            }
+        }
+        public override void Interact(){
+            if(!Working){
+                MelonCoroutines.Start(Work());
+            }
+        }
+        [HideFromIl2Cpp]
+        public System.Collections.IEnumerator Work(){
+            Working=true;
+            GetComponent<Animator>().Play("WorkStart");
+            yield return new WaitForSeconds(3.5f);
+            foreach(GameObject gObj in WarpArray){
+                gObj.active=true;
+            }
+            int rand=new System.Random().Next(0,2);
+            if(rand==1){
+                DestroyerWarp.active=true;
+            }else{
+                PhoenixWarp.active=true;
+            }
+            yield return new WaitForSeconds(4.5f);
+            if(rand==1){
+                DestroyerWarp.active=false;
+                Destroyer.active=true;
+                PlaySound("destroyer-birth");
+            }else{
+                PhoenixWarp.active=false;
+                Phoenix.active=true;
+                PlaySound("phoenix-clip",2);
+                PlaySound("phoenix-move",2);
+            }
+            foreach(GameObject gObj in WarpArray){
+                gObj.active=false;
+            }
+            yield return new WaitForSeconds(4.5f);
+            Working=false;
+        }
+        [RegisterTypeInIl2Cpp]
+        public class FlyBehavior:CustomInteractable{
+            public FlyBehavior(IntPtr ptr):base(ptr){}
+            public float Speed;
+            public int MinRotateDist;
+            public float Rotation;
+            public void Start(){
+                Log(Speed);
+                Log(MinRotateDist);
+                Log(Rotation);
+            }
+            public void Update(){
+                Vector3 local=transform.localPosition;
+                transform.localPosition=new(0,transform.forward.y+local.y,local.z+Speed);
+                if(local.z>MinRotateDist&&local.z<300){
+                    transform.Rotate(transform.rotation.x-Rotation,0,0);
+                }
+                if(local.z>500){
+                    transform.localPosition=new(0,60,0);
+                    transform.rotation=new();
+                    gameObject.active=false;
+                }
+            }
+        }
+    }
+}

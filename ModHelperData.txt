@@ -1,6 +1,0 @@
-Name = "Mothership"
-Description = "Adds Tal'darim Mothership from StarCraft 2 to BTD6 as a hero"
-Version = "1.0.1"
-RepoName = "mothership"
-RepoOwner = "Onixiya"
-Author = "Silentstorm"

@@ -1,0 +1,17 @@
+﻿using UnityEngine;
+namespace Mothership.NewMainMenu{
+    [RegisterTypeInIl2Cpp]
+    public class PhoenixFlyIn:MonoBehavior{
+        public PhoenixFlyIn(IntPtr ptr):base(ptr){}
+        public int Timer=0;
+        public void Update(){
+            Timer+=UnityEngine.Time.fixedDeltaTime;
+            if(Timer>=30){
+                if(new System.Random().Next(1,5)==1){
+                    
+                }
+                Timer=0;
+            }
+        }
+    }
+}
