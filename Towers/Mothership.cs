@@ -91,7 +91,6 @@ namespace Mothership{
 		public override UpgradeModel[]GenerateUpgradeModels(){
 			List<UpgradeModel>upgradeList=new();
 			upgradeList.Add(new("Mothership Level 2",0,255,new(),0,1,0,"","Mothership Level 2"));
-			Log("upgrade");
 			for(int i=3;i<21;i++){
 				if(i>9){
 					//avoids it going too high
@@ -99,9 +98,6 @@ namespace Mothership{
 				}else{
 					upgradeList.Add(new("Mothership Level "+i,0,(int)Math.Round(upgradeList.Last().xpCost*1.55),new(),0,i-1,0,"","Mothership Level "+i));
 				}
-			}
-			foreach(var thing in upgradeList){
-				Log(thing.name+" "+thing.xpCost+" "+thing.tier+" "+thing.localizedNameOverride);
 			}
 			return upgradeList.ToArray();
 		}
