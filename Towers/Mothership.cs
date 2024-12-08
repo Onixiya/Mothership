@@ -1,68 +1,11 @@
-﻿using Il2CppAssets.Scripts.Unity.Bridge;
-
-namespace Mothership{
+﻿namespace Mothership{
     public class Mothership:SC2Tower{
         public override string Name=>"Mothership";
-        public override string Description=>"Capital ships often found leading the Tal'darim Death Fleet";
         public override Faction TowerFaction=>Faction.Protoss;
 		public override bool ShowUpgradeMenu=>false;
 		public override bool AddToShop=>false;
 		public override bool Hero=>true;
-		public override Dictionary<string,Il2CppSystem.Type>Components=>new(){{"Mothership-Prefab",Il2CppType.Of<MothershipBehaviour>()}};
 		public override int Order=>2;
-		//has to be stored outside of the behaviour as the gameobject will be instantiated again on the blink ability and can fuck with things
-		public static string ActiveObj="Core";
-        [RegisterTypeInIl2Cpp]
-		public class MothershipBehaviour:MonoBehaviour{
-			public MothershipBehaviour(IntPtr ptr):base(ptr){}
-			int SelectSound=0;
-			int UpgradeSound=0;
-			public GameObject Active;
-			public GameObject Core;
-			public GameObject Mothership;
-			public GameObject Fathership;
-			public bool Upgraded=false;
-			void Start(){
-				Core=transform.GetChild(0).gameObject;
-				Mothership=transform.GetChild(1).gameObject;
-				Fathership=transform.GetChild(2).gameObject;
-				Core.SetActive(false);
-				Mothership.SetActive(false);
-				Fathership.SetActive(false);
-				switch(ActiveObj){
-					case"Core":
-						Active=Core;
-						Core.SetActive(true);
-						break;
-					case"Mothership":
-						Active=Mothership;
-						Mothership.SetActive(true);
-						break;
-					case"Fathership":
-						Active=Fathership;
-						Fathership.SetActive(true);
-						break;
-				}
-				Core.transform.localPosition=new(0,0,0);
-				Mothership.transform.localPosition=new(0,0,0);
-				Fathership.transform.localPosition=new(0,0,0);
-			}
-			public void PlaySelectSound(){
-				if(SelectSound>8){
-					SelectSound=0;
-				}
-				SelectSound+=1;
-				PlaySound("Mothership-Select"+SelectSound);
-			}
-			public void PlayUpgradeSound(){
-				if(UpgradeSound>7){
-					UpgradeSound=0;
-				}
-				UpgradeSound+=1;
-				SelectSound=0;
-				PlaySound("Mothership-Upgrade"+UpgradeSound);
-			}
-		}
         public override TowerModel[]GenerateTowerModels(){
             return new TowerModel[]{
                 Base(),
@@ -89,9 +32,8 @@ namespace Mothership{
 		}
 		//did some basic shit with desmos and figured out the xp ratio for pat fusty, 1.55
 		public override UpgradeModel[]GenerateUpgradeModels(){
-			List<UpgradeModel>upgradeList=new();
-			upgradeList.Add(new("Mothership Level 2",0,255,new(),0,1,0,"","Mothership Level 2"));
-			for(int i=3;i<21;i++){
+			List<UpgradeModel>upgradeList=new(){new("Mothership Level 1",0,255,new(),0,1,0,"","Mothership Level 1")};
+			for(int i=1;i<21;i++){
 				if(i>9){
 					//avoids it going too high
 					upgradeList.Add(new("Mothership Level "+i,0,(int)Math.Round(upgradeList.Last().xpCost*1.1),new(),0,i-1,0,"","Mothership Level "+i));
@@ -104,7 +46,7 @@ namespace Mothership{
 		//am tempted to turn some of this into how mod helper does it to avoid hard coding it like this
 		//but i don't want to make it seem like i'm copying how it does it one for one
 		public override HeroDetailsModel GenerateHeroDetails(){
-			LocManager.textTable.Add("Mothership Description",Description);
+			LocManager.textTable.Add("Mothership Description","Capital ships often found leading the Tal'darim Death Fleet");
             LocManager.textTable.Add("Mothership Short Description","Capital Ship");
 			LocManager.textTable.Add("Mothership Level 1 Description","Fires charged psionic bolts at bloons");
 			LocManager.textTable.Add("Mothership Level 2 Description","Further range");
@@ -126,30 +68,30 @@ namespace Mothership{
 			LocManager.textTable.Add("Mothership Level 18 Description","All bloon types can now be damaged and affected by abilities");
 			LocManager.textTable.Add("Mothership Level 19 Description","Summonning the Death Fleet warps in 3 more Destroyers");
 			LocManager.textTable.Add("Mothership Level 20 Description","Upgrades to a Fathership. Ultimate expression of Tal'darim might");
-			return new("Mothership",14,20,1,0,10,0,false);
+            return new("Mothership",0,20,1,0,0,false);
 		}
 		public override SkinData HeroSkin(){
 			//won't let me add stuff by a collection init
 			Il2CppSystem.Collections.Generic.List<StorePortraits>portraits=new();
-			portraits.Add(new(){asset=new(){guidRef="Ui[Mothership-CorePortrait]"},levelTxt="0"});
-			portraits.Add(new(){asset=new(){guidRef="Ui[Mothership-Portrait]"},levelTxt="10"});
-			portraits.Add(new(){asset=new(){guidRef="Ui[Mothership-FathershipPortrait]"},levelTxt="20"});
-			var skin=ScriptableObject.CreateInstance<SkinData>();
+			portraits.Add(new(){asset=new("Ui[Mothership-CorePortrait]"),levelTxt="1"});
+			portraits.Add(new(){asset=new("Ui[Mothership-Portrait]"),levelTxt="10"});
+			portraits.Add(new(){asset=new("Ui[Mothership-FathershipPortrait]"),levelTxt="20"});
+			SkinData skin=ScriptableObject.CreateInstance<SkinData>();
 			skin.name=Name;
-			skin.skinName=LocManager.GetText("Mothership Short Description");
-			skin.description=LocManager.GetText("Mothership Description");
+			skin.skinName="Mothership Short Description";
+			skin.description="Mothership Description";
 			skin.baseTowerName=Name;
 			skin.mmCost=0;
-			skin.icon=new(){guidRef="Ui[Mothership-Button]"};
-			skin.iconSquare=new(){guidRef="Ui[Mothership-HeroIcon]"};
+			skin.icon=new("Ui[Mothership-Button]");
+			skin.iconSquare=new("Ui[Mothership-HeroIcon]");
 			skin.isDefaultTowerSkin=true;
-			skin.textMaterialId="";
+			skin.textMaterialId="Gwendolin";
 			skin.StorePortraitsContainer=new(){
 				items=portraits
 			};
-			skin.unlockedVoiceSound=new(){guidRef="Mothership-Birth"};
+			skin.unlockedVoiceSound=new("Mothership-Birth");
 			skin.unlockedEventSound=skin.unlockedVoiceSound;
-			var gwenSkin=GameData.Instance.skinsData.SkinList.items.First(a=>a.baseTowerName=="Gwendolin");
+			SkinData gwenSkin=GameData.Instance.skinsData.SkinList.items.First(a=>a.baseTowerName=="Gwendolin");
 			skin.backgroundBanner=gwenSkin.backgroundBanner;
 			skin.fontMaterial=gwenSkin.fontMaterial;
 			skin.backgroundColourTintOverride=gwenSkin.backgroundColourTintOverride;
@@ -159,22 +101,23 @@ namespace Mothership{
 			TowerModel mothership=gameModel.GetTowerFromId("WizardMonkey").Clone<TowerModel>();
 			mothership.baseId=Name;
 			mothership.name=Name;
-			mothership.portrait=new(){guidRef="Ui[Mothership-CorePortrait]"};
-			mothership.icon=new(){guidRef="Ui[Mothership-Icon]"};
+			mothership.portrait=new("Ui[Mothership-CorePortrait]");
+			mothership.icon=new("Ui[Mothership-Icon]");
             mothership.doesntRotate=true;
 			mothership.cost=975;
             mothership.radius=1;
             mothership.range=40;
 			mothership.towerSet=(TowerSet)16;
-            mothership.display=new(){guidRef="Mothership-Prefab"};
+            mothership.display=new("Mothership-CorePrefab");
 			mothership.tier=1;
 			mothership.tiers=new(new[]{1,0,0});
 			mothership.upgrades=new UpgradePathModel[]{new("Mothership Level 2",Name+" 2")};
 			mothership.appliedUpgrades=new(0);
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
+            mothershipBehav.Add(SelectedSoundModel);
 			DisplayModel mothershipDisplay=mothershipBehav.GetModel<DisplayModel>();
             mothershipDisplay.positionOffset=new(0,0,200);
-            mothershipDisplay.display=new(){guidRef=mothership.display.guidRef};
+            mothershipDisplay.display=new(mothership.display.guidRef);
 			mothershipBehav.Add(new HeroModel("HeroModel",1,1));
             AttackModel repulsor=mothershipBehav.GetModel<AttackModel>();
             repulsor.range=mothership.range;
@@ -188,6 +131,7 @@ namespace Mothership{
             repulsorDamage.damage=1;
             repulsorDamage.immuneBloonProperties=(BloonProperties)8;
 			mothership.behaviors=mothershipBehav.ToArray();
+            SetSounds(mothership,true,true,true,true);
 			return mothership;
         }
 		public TowerModel Level2(){
@@ -224,28 +168,30 @@ namespace Mothership{
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add("Mothership Level 4");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			AbilityModel timeWarp=BlankAbilityModel.Clone<AbilityModel>();
+			AbilityModel timeWarp=BlankAbilityModel;
             timeWarp.name="Time Warp";
             timeWarp.displayName=timeWarp.name;
             timeWarp.description=LocManager.GetText("Mothership Level 4 Description").Split(':')[1].Remove(0,1);
-            timeWarp.icon=new(){guidRef="Ui[Mothership-TimeWarpIcon]"};
+			timeWarp.icon=new("Ui[Mothership-TimeWarpIcon]");
 			timeWarp.addedViaUpgrade="Mothership Level 4";
 			List<Model>timeWarpBehav=timeWarp.behaviors.ToList();
             timeWarpBehav.Add(gameModel.GetTowerFromId("SuperMonkey-040").behaviors.GetModel<AbilityModel>().behaviors.GetModel<ActivateAttackModel>().Clone<ActivateAttackModel>());
-			timeWarp.behaviors=timeWarpBehav.ToArray();
-            ActivateAttackModel timeWarpActivateAttack=timeWarp.behaviors.GetModel<ActivateAttackModel>();
+            string s1="Mothership-"+new System.Random().Next(1,10);
+            string s2="Mothership-"+new System.Random().Next(1,10);
+            timeWarpBehav.Add(new CreateSoundOnAbilityModel("Mothership-TimeWarp",null,new(s1,new(s1)),new(s2,new(s2))));
+            ActivateAttackModel timeWarpActivateAttack=timeWarpBehav.GetModel<ActivateAttackModel>();
             timeWarpActivateAttack.turnOffExisting=false;
 			AttackModel timeWarpAttack=gameModel.GetTowerFromId("WizardMonkey-020").behaviors.GetModel<AttackModel>("Wall").Clone<AttackModel>();
             timeWarpActivateAttack.attacks[0]=timeWarpAttack;
-            timeWarpAttack.name="TimeWarp";
+            timeWarpAttack.name="Time Warp";
             timeWarpAttack.range=mothership.range;
 			List<Model>timeWarpAttackBehav=timeWarpAttack.behaviors.ToList();
             timeWarpAttackBehav.RemoveModel<RotateToTargetModel>();
 			timeWarpAttack.behaviors=timeWarpAttackBehav.ToArray();
 			ProjectileModel timeWarpProjectile=timeWarpAttack.weapons[0].projectile;
-			timeWarpProjectile.display=new(){guidRef="Mothership-TimeWarpPrefab"};
+			timeWarpProjectile.display=new("Mothership-TimeWarpPrefab");
 			timeWarpProjectile.behaviors.GetModel<AgeModel>().Lifespan=5;
-			timeWarpProjectile.behaviors.GetModel<DisplayModel>().display=new(){guidRef=timeWarpProjectile.display.guidRef};
+			timeWarpProjectile.behaviors.GetModel<DisplayModel>().display=new(timeWarpProjectile.display.guidRef);
 			List<Model>timeWarpProjectileBehav=timeWarpProjectile.behaviors.ToList();
             timeWarpProjectileBehav.RemoveModel<DamageModel>();
             timeWarpProjectileBehav.RemoveModel<CreateEffectOnExhaustedModel>();
@@ -254,7 +200,7 @@ namespace Mothership{
 			timeWarpProjFilterList.Add(new FilterOutTagModel(null,null,null){name="FilterOutTagModel",tag="Moabs",disableWhenSupportMutatorIDs=new(0)});
             timeWarpProjFilter.filters=timeWarpProjFilterList.ToArray();
             timeWarpProjectile.collisionPasses[0]=-1;
-			SlowModel slowModel=gameModel.GetTowerFromId("GlueGunner").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<SlowModel>().Clone<SlowModel>();
+			SlowModel slowModel=gameModel.GetTowerFromId("GlueGunner-001").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<SlowModel>().Clone<SlowModel>();
 			timeWarpProjectileBehav.Add(slowModel);
 			timeWarpProjectile.behaviors=timeWarpProjectileBehav.ToArray();
             slowModel.mutationId="TimeWarp-Slow";
@@ -270,6 +216,7 @@ namespace Mothership{
             slowMutator.mutationId=slowModel.mutationId;
             slowMutator.overlayType=slowModel.overlayType;
             slowMutator.multiplier=slowModel.Multiplier;
+            timeWarp.behaviors=timeWarpBehav.ToArray();
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
             mothershipBehav.Add(timeWarp);
 			mothership.behaviors=mothershipBehav.ToArray();
@@ -325,7 +272,7 @@ namespace Mothership{
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add("Mothership Level 8");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			AbilityModel blink=BlankAbilityModel.Clone<AbilityModel>();
+			AbilityModel blink=BlankAbilityModel;
 			List<Model>blinkBehav=blink.behaviors.ToList();
             blinkBehav.Add(gameModel.GetTowerFromId("SuperMonkey-003").behaviors.GetModel<AbilityModel>().behaviors.GetModel<DarkshiftModel>().Clone<DarkshiftModel>());
 			blink.behaviors=blinkBehav.ToArray();
@@ -334,10 +281,10 @@ namespace Mothership{
             blink.displayName="Blink";
             blink.description=LocManager.GetText("Mothership Level 8 Description").Split(':')[1].Remove(0,1);;
             blink.cooldown=50;
-            blink.icon=new(){guidRef="Ui[Mothership-BlinkIcon]"};
+			blink.icon=new("Ui[Mothership-BlinkIcon]");
             blink.addedViaUpgrade="Mothership Level 8";
-            teleModel.disappearEffectModel.assetId=new(){guidRef=""};
-            teleModel.reappearEffectModel.assetId=new(){guidRef=""};
+			teleModel.disappearEffectModel.assetId=new("");
+            teleModel.reappearEffectModel.assetId=new("");
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
             mothershipBehav.Add(blink);
 			mothership.behaviors=mothershipBehav.ToArray();
@@ -352,28 +299,52 @@ namespace Mothership{
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add("Mothership Level 9");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			ProjectileFilterModel filter=mothership.behaviors.GetModel<AbilityModel>("Time Warp").behaviors.GetModel<ActivateAttackModel>().attacks[0].weapons[0].projectile
+            Il2CppReferenceArray<Model>mothershipBehav=mothership.behaviors;
+			ProjectileFilterModel filter=mothershipBehav.GetModel<AbilityModel>("Time Warp").behaviors.GetModel<ActivateAttackModel>().attacks[0].weapons[0].projectile
                 .behaviors.GetModel<ProjectileFilterModel>();
 			List<FilterModel>filterList=filter.filters.ToList();
 			filterList.Add(filter.filters[1].Clone<FilterModel>());
             filter.filters=filterList.ToArray();
             filter.filters[1].Cast<FilterOutTagModel>().tag="ZOMG";
             filter.filters[2].Cast<FilterOutTagModel>().tag="BAD";
+            CreateSoundOnUpgradeModel csoum=mothershipBehav.GetModel<CreateSoundOnUpgradeModel>();
+            csoum.sound=new("Mothership-Birth",new("Mothership-Birth"));
+            csoum.sound1=csoum.sound;
+            csoum.sound2=csoum.sound;
+            csoum.sound3=csoum.sound;
+            csoum.sound4=csoum.sound;
+            csoum.sound5=csoum.sound;
+            csoum.sound6=csoum.sound;
+            csoum.sound7=csoum.sound;
+            csoum.sound8=csoum.sound;
 			return mothership;
 		}
 		public TowerModel Level10(){
 			TowerModel mothership=Level9().Clone<TowerModel>();
 			mothership.name=Name+" 10";
+			mothership.display=new("Mothership-Prefab");
 			mothership.tier=10;
 			mothership.tiers=new(new[]{10,0,0});
+            mothership.portrait=new("Ui[Mothership-Portrait]");
 			mothership.upgrades=new UpgradePathModel[]{new("Mothership Level 11",Name+" 11")};
+            SetSounds(mothership,true,true,true,false);
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add("Mothership Level 10");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
 			mothership.range+=50;
-			Il2CppReferenceArray<Model>mothershipBehav=mothership.behaviors;
-            mothershipBehav.GetModel<AbilityModel>("Time Warp").behaviors.GetModel<ActivateAttackModel>().attacks[0].range=mothership.range;
-            mothershipBehav.GetModel<DisplayModel>().display=new(){guidRef=mothership.display.guidRef};
+			List<Model>mothershipBehav=mothership.behaviors.ToList();
+            mothershipBehav.RemoveModel<CreateSoundOnTowerPlaceModel>();
+            Il2CppReferenceArray<Model>timeWarpBehav=mothershipBehav.GetModel<AbilityModel>("Time Warp").behaviors;
+            timeWarpBehav.GetModel<ActivateAttackModel>().attacks[0].range=mothership.range;
+            CreateSoundOnAbilityModel csoam=timeWarpBehav.GetModel<CreateSoundOnAbilityModel>();
+            csoam.sound=null;
+            csoam.heroSound=new("Mothership-Ability1",new("Mothership-Ability1"));
+            csoam.heroSound2=new("Mothership-Ability2",new("Mothership-Ability2"));
+            AbilityModel blink=mothershipBehav.GetModel<AbilityModel>("Blink");
+            List<Model>blinkBehav=blink.behaviors.ToList();
+            blinkBehav.Add(new CreateSoundOnAbilityModel("Mothership-Blink",null,new("Mothership-Blink1",new("Mothership-Blink1")),new("Mothership-Blink2",new("Mothership-Blink2"))));
+            blink.behaviors=blinkBehav.ToArray();
+            mothershipBehav.GetModel<DisplayModel>().display=new(mothership.display.guidRef);
 			AttackModel terminator=mothershipBehav.GetModel<AttackModel>();
             terminator.weapons[0]=gameModel.GetTowerFromId("BallOfLightTower").behaviors.GetModel<AttackModel>().weapons[0].Clone<WeaponModel>();
             WeaponModel terminatorWeapon=terminator.weapons[0];
@@ -394,6 +365,7 @@ namespace Mothership{
             terminator.weapons[3].ejectY=0;
             terminator.weapons[4].ejectY=-10;
             terminator.weapons[5].ejectY=10;
+            mothership.behaviors=mothershipBehav.ToArray();
 			return mothership;
 		}
 		public TowerModel Level11(){
@@ -482,24 +454,26 @@ namespace Mothership{
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add("Mothership Level 16");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			AttackModel destroyerWarp=CreateTowerAttackModel.Clone<AttackModel>();
+			AttackModel destroyerWarp=CreateTowerAttackModel;
             destroyerWarp.name="DestroyerWarp";
             destroyerWarp.range=mothership.range;
 			WeaponModel destroyerWarpWeapon=destroyerWarp.weapons[0];
             destroyerWarpWeapon.rate=0.025f;
 			ProjectileModel destroyerWarpProj=destroyerWarpWeapon.projectile;
-            destroyerWarpProj.display=new(){guidRef="Destroyer-WarpPrefab"};
+            destroyerWarpProj.display=new("Destroyer-WarpPrefab");
 			Il2CppReferenceArray<Model>destroyerWarpProjBehav=destroyerWarpProj.behaviors;
-            destroyerWarpProjBehav.GetModel<DisplayModel>().display=new(){guidRef="Destroyer-WarpPrefab"};
+            destroyerWarpProjBehav.GetModel<DisplayModel>().display=new(destroyerWarpProj.display.guidRef);
             destroyerWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Destroyer");
-			AbilityModel deathFleet=BlankAbilityModel.Clone<AbilityModel>();
+			AbilityModel deathFleet=BlankAbilityModel;
 			deathFleet.name="Death Fleet";
-            deathFleet.icon=new(){guidRef="Ui[Mothership-DeathFleetIcon]"};
+            deathFleet.icon=new("Ui[Mothership-DeathFleetIcon]");
             deathFleet.displayName="Summon Death Fleet";
             deathFleet.cooldown=80;
             deathFleet.addedViaUpgrade="Mothership Level 16";
 			List<Model>deathFleetBehav=deathFleet.behaviors.ToList();
             deathFleetBehav.Add(gameModel.GetTowerFromId("SuperMonkey-040").behaviors.GetModel<AbilityModel>().behaviors.GetModel<ActivateAttackModel>().Clone<ActivateAttackModel>());
+            deathFleetBehav.Add(new CreateSoundOnAbilityModel("Mothership-DeathFleet",null,
+                new("Mothership-Ability1",new("Mothership-Ability2")),new("Mothership-Ability2",new("Mothership-Ability2"))));
 			ActivateAttackModel deathFleetAttack=deathFleetBehav.GetModel<ActivateAttackModel>();
             deathFleetAttack.turnOffExisting=false;
             deathFleetAttack.attacks[0]=destroyerWarp;
@@ -557,9 +531,11 @@ namespace Mothership{
 		public TowerModel Level20(){
 			TowerModel mothership=Level19().Clone<TowerModel>();
 			mothership.name=Name+" 20";
+			mothership.display=new("Mothership-FathershipPrefab");
 			mothership.tier=20;
 			mothership.tiers=new(new[]{20,0,0});
 			mothership.upgrades=new(0);
+            mothership.portrait=new("Ui[Mothership-FathershipPortrait]");
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add("Mothership Level 20");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
@@ -569,9 +545,9 @@ namespace Mothership{
 			WeaponModel carrierWarpWeapon=carrierWarp.weapons[0];
             carrierWarpWeapon.rate=0.06f;
 			ProjectileModel carrierWarpProj=carrierWarpWeapon.projectile;
-            carrierWarpProj.display=new(){guidRef="Carrier-WarpPrefab"};
+			carrierWarpProj.display=new("Carrier-WarpPrefab");
 			Il2CppReferenceArray<Model>carrierWarpProjBehav=carrierWarpProj.behaviors;
-            carrierWarpProjBehav.GetModel<DisplayModel>().display=new(){guidRef="Carrier-WarpPrefab"};
+			carrierWarpProjBehav.GetModel<DisplayModel>().display=new(carrierWarpProj.display.guidRef);
 			TowerModel carrierTower=gameModel.GetTowerFromId("Carrier");
             carrierWarpProjBehav.GetModel<CreateTowerModel>().tower=carrierTower;
 			AttackModel phoenixWarp=CreateTowerAttackModel.Clone<AttackModel>();
@@ -580,10 +556,10 @@ namespace Mothership{
 			WeaponModel phoenixWarpWeapon=phoenixWarp.weapons[0];
             phoenixWarpWeapon.rate=0.025f;
 			ProjectileModel phoenixWarpProj=phoenixWarpWeapon.projectile;
-            phoenixWarpProj.display=new(){guidRef="Phoenix-WarpPrefab"};
+			phoenixWarpProj.display=new("PhoenixSC2-WarpPrefab");
 			Il2CppReferenceArray<Model>phoenixWarpProjBehav=phoenixWarpProj.behaviors;
-            phoenixWarpProjBehav.GetModel<DisplayModel>().display=new(){guidRef="Phoenix-WarpPrefab"};
-            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Phoenix");
+			phoenixWarpProjBehav.GetModel<DisplayModel>().display=new(phoenixWarpProj.display.guidRef);
+            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("PhoenixSC2");
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
 			AbilityModel deathFleet=mothershipBehav.GetModel<AbilityModel>("Death Fleet");
             deathFleet.cooldown-=30;
@@ -607,66 +583,5 @@ namespace Mothership{
 			mothership.behaviors=mothershipBehav.ToArray();
 			return mothership;
 		}
-		public override void Create(Tower tower){
-            PlaySound("Mothership-Core"+new System.Random().Next(1,9));
-        }
-        public override void Upgrade(int tier,Tower tower){
-            if(tier>=10){
-				MothershipBehaviour behaviour=tower.Node.graphic.GetComponent<MothershipBehaviour>();
-				if(tier==20){
-					ActiveObj="Fathership";
-					behaviour.Active.SetActive(false);
-					behaviour.Active=behaviour.Fathership;
-					behaviour.Active.SetActive(true);
-				}
-                if(behaviour.Upgraded==false){
-					ActiveObj="Mothership";
-                    PlaySound("Mothership-Birth");
-                    behaviour.Upgraded=true;
-					behaviour.Active.SetActive(false);
-					behaviour.Active=behaviour.Mothership;
-					behaviour.Active.SetActive(true);
-                    return;
-                }
-                behaviour.PlayUpgradeSound();
-                return;
-            }
-            PlaySound("Mothership-Core"+new System.Random().Next(1,9));
-        }
-        public override void Select(Tower tower){
-			MothershipBehaviour behaviour=tower.Node.graphic.GetComponent<MothershipBehaviour>();
-            if(behaviour.Upgraded){
-                behaviour.PlaySelectSound();
-                return;
-            }
-            PlaySound("Mothership-Core"+new System.Random().Next(1,9));
-        }
-        public override bool Ability(string abilityName,Tower tower){
-			MothershipBehaviour behaviour=tower.Node.graphic.GetComponent<MothershipBehaviour>();
-			PlayAnimation(behaviour.Active.GetComponent<Animator>(),"Mothership-Ability",0);
-            switch(abilityName){
-                case"AbilityModel_Time Warp":
-                    if(behaviour.Upgraded){
-                        PlaySound("Mothership-TimeWarp");
-                    }else{
-                        PlaySound("Mothership-Core"+new System.Random().Next(1,9));
-						PlayAnimation(behaviour.Active.GetComponent<Animator>(),"Mothership-Ability",0);
-                    }
-                    break;
-                case"AbilityModel_Blink":
-                    if(behaviour.Upgraded){
-                        PlaySound("Mothership-Blink");
-                    }else{
-                        PlaySound("Mothership-Core"+new System.Random().Next(1,9));
-                    }
-					PlayAnimation(behaviour.Active.GetComponent<Animator>(),"Mothership-Ability",0);
-                    break;
-                case"AbilityModel_Death Fleet":
-                    PlaySound("Mothership-DeathFleet");
-					PlayAnimation(behaviour.Active.GetComponent<Animator>(),"Mothership-Ability");
-                    break;
-            }
-			return true;
-        }
 	}
 }

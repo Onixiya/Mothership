@@ -3,22 +3,8 @@
         public override string Name=>"Destroyer";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
-        public override string Description=>"no";
 		public override bool Upgradable=>false;
 		public override bool ShowUpgradeMenu=>false;
-		public override Dictionary<string,Il2CppSystem.Type>Components=>new(){{"Destroyer-Prefab",Il2CppType.Of<DestroyerBehaviour>()}};
-		[RegisterTypeInIl2Cpp]
-		public class DestroyerBehaviour:MonoBehaviour{
-			public DestroyerBehaviour(IntPtr ptr):base(ptr){}
-			int SelectSound=0;
-			public void PlaySelectSound(){
-				if(SelectSound>5){
-					SelectSound=0;
-				}
-				SelectSound+=1;
-				PlaySound("Destroyer-Select"+SelectSound);
-			}
-		}
 		public override TowerModel[]GenerateTowerModels(){
 			return new TowerModel[]{
 				Base()
@@ -31,12 +17,14 @@
 			destroyer.radius=15;
             destroyer.range=65;
             destroyer.dontDisplayUpgrades=true;
-            destroyer.display=new(){guidRef="Destroyer-Prefab"};
+            destroyer.display=new("Destroyer-Prefab");
 			destroyer.upgrades=new(0);
+            destroyer.portrait=new("Ui[Destroyer-Portrait]");
 			List<Model>destroyerBehav=destroyer.behaviors.ToList();
+            destroyerBehav.Add(SelectedSoundModel);
 			destroyerBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
             DisplayModel display=destroyerBehav.GetModel<DisplayModel>();
-			display.display=new(){guidRef=destroyer.display.guidRef};
+			display.display=destroyer.display;
             display.positionOffset=new(0,0,190);
             AttackModel destroyerAttack=destroyerBehav.GetModel<AttackModel>();
             destroyerAttack.range=destroyer.range;
@@ -53,13 +41,8 @@
             beamBehav.GetModel<DamageModel>().damage=0.45f;
             beamBehav.GetModel<CreateLightningEffectModel>().lifeSpan=0.1f;
 			destroyer.behaviors=destroyerBehav.ToArray();
+            SetSounds(destroyer,true,true,false,false);
 			return destroyer;
-        }
-        public static void Create(){
-            PlaySound("Destroyer-Birth");
-        }
-        public override void Select(Tower tower){
-            tower.Node.graphic.GetComponent<DestroyerBehaviour>().PlaySelectSound();
         }
     }
 }
