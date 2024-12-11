@@ -14,12 +14,8 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Bundles\carrier.bundle" />
     <None Remove="Bundles\destroyer.bundle" />
-    <None Remove="Bundles\heroscreen.bundle" />
-    <None Remove="Bundles\mainmenu.bundle" />
     <None Remove="Bundles\mothership.bundle" />
-    <None Remove="Bundles\phoenixsc2.bundle" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -78,10 +74,8 @@
     </Reference>
 	<EmbeddedResource Include="Bundles\carrier.bundle" />
 	<EmbeddedResource Include="Bundles\destroyer.bundle" />
-	<EmbeddedResource Include="Bundles\heroscreen.bundle" />
-	<EmbeddedResource Include="Bundles\mainmenu.bundle" />
 	<EmbeddedResource Include="Bundles\mothership.bundle" />
-	<EmbeddedResource Include="Bundles\phoenixsc2.bundle" />
+	<EmbeddedResource Include="Bundles\phoenix.bundle" />
 	<EmbeddedResource Include="Icon.png" Link="Icon.png" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

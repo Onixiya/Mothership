@@ -1,10 +1,11 @@
 ﻿namespace Mothership{
     public class Destroyer:SC2Tower{
-        public override string Name=>"Destroyer";
+        public override string Name=>"Tal'darim Destroyer";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
 		public override bool Upgradable=>false;
 		public override bool ShowUpgradeMenu=>false;
+        public override string BundleName=>"destroyer.bundle";
 		public override TowerModel[]GenerateTowerModels(){
 			return new TowerModel[]{
 				Base()
@@ -17,9 +18,9 @@
 			destroyer.radius=15;
             destroyer.range=65;
             destroyer.dontDisplayUpgrades=true;
-            destroyer.display=new("Destroyer-Prefab");
+            destroyer.display=new(Name+"-Prefab");
 			destroyer.upgrades=new(0);
-            destroyer.portrait=new("Ui[Destroyer-Portrait]");
+            destroyer.portrait=new("Ui["+Name+"-Portrait]");
 			List<Model>destroyerBehav=destroyer.behaviors.ToList();
             destroyerBehav.Add(SelectedSoundModel);
 			destroyerBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
@@ -41,7 +42,7 @@
             beamBehav.GetModel<DamageModel>().damage=0.45f;
             beamBehav.GetModel<CreateLightningEffectModel>().lifeSpan=0.1f;
 			destroyer.behaviors=destroyerBehav.ToArray();
-            SetSounds(destroyer,true,true,false,false);
+            SetSounds(destroyer,Identifier,true,true,false,false);
 			return destroyer;
         }
     }

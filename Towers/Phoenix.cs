@@ -1,10 +1,10 @@
 ﻿namespace Mothership{
     public class Phoenix:SC2Tower{
-        //avoids conflicting with the vanilla phoenix
-        public override string Name=>"PhoenixSC2";
+        public override string Name=>"Tal'darim Phoenix";
         public override bool AddToShop=>false;
 		public override bool Upgradable=>false;
 		public override Faction TowerFaction=>Faction.Protoss;
+        public override string BundleName=>"phoenix.bundle";
 		public override TowerModel[]GenerateTowerModels(){
 			return new TowerModel[]{
 				Base()
@@ -24,7 +24,7 @@
 			phoenixBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
 			phoenixBehav.GetModel<DisplayModel>().display=phoenix.display;
             AirUnitModel phoenixAir=phoenixBehav.GetModel<AirUnitModel>();
-			phoenixAir.display=new("PhoenixSC2-Prefab");
+			phoenixAir.display=new(Name+"-Prefab");
             HeliMovementModel phoenixMove=phoenixAir.behaviors[0].Cast<HeliMovementModel>();
 			phoenixMove.maxSpeed=120;
             phoenixMove.rotationSpeed=0.115f;
