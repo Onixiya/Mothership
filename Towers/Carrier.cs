@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Carrier:SC2Tower{
-        public override string Name=>"Tal'darim Carrier";
+        public override string Name=>"Carrier";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
         public override int Order=>1;
@@ -33,11 +33,11 @@
             WeaponModel carrierWeapon=carrierBehav.GetModel<AttackModel>().weapons[0];
             SubTowerFilterModel carrierFilter=carrierWeapon.behaviors.First(a=>a.GetIl2CppType().Name=="SubTowerFilterModel").Cast<SubTowerFilterModel>();
             carrierFilter.maxNumberOfSubTowers=8;
-            carrierFilter.baseSubTowerId="Tal'darim Interceptor";
-            carrierFilter.baseSubTowerIds[0]="Tal'darim Interceptor";
-            carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Tal'darim Interceptor");
+            carrierFilter.baseSubTowerId="Interceptor";
+            carrierFilter.baseSubTowerIds[0]="Interceptor";
+            carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Interceptor");
 			carrier.behaviors=carrierBehav.ToArray();
-            SetSounds(carrier,Identifier,false,true,false,false);
+            SetSounds(carrier,Name,false,true,false,false);
 			return carrier;
         }
     }

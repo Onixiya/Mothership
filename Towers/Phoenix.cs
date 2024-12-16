@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Phoenix:SC2Tower{
-        public override string Name=>"Tal'darim Phoenix";
+        public override string Name=>"SC2Phoenix";
         public override bool AddToShop=>false;
 		public override bool Upgradable=>false;
 		public override Faction TowerFaction=>Faction.Protoss;

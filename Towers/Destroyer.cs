@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Destroyer:SC2Tower{
-        public override string Name=>"Tal'darim Destroyer";
+        public override string Name=>"Destroyer";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
 		public override bool Upgradable=>false;
@@ -42,7 +42,7 @@
             beamBehav.GetModel<DamageModel>().damage=0.45f;
             beamBehav.GetModel<CreateLightningEffectModel>().lifeSpan=0.1f;
 			destroyer.behaviors=destroyerBehav.ToArray();
-            SetSounds(destroyer,Identifier,true,true,false,false);
+            SetSounds(destroyer,Name,true,true,false,false);
 			return destroyer;
         }
     }

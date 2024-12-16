@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Interceptor:SC2Tower{
-        public override string Name=>"Tal'darim Interceptor";
+        public override string Name=>"Interceptor";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
 		public override bool Upgradable=>false;
@@ -28,7 +28,7 @@
                 weapons[0].projectile.behaviors.GetModel<CreateTowerModel>().tower.Clone<TowerModel>();
 			interceptorBehav.Add(plane.behaviors.GetModel<AirUnitModel>());
             AirUnitModel interceptorAir=interceptorBehav.GetModel<AirUnitModel>();
-            interceptorAir.display=new("Tal'darim Carrier-InteceptorPrefab");
+            interceptorAir.display=new("Carrier-InteceptorPrefab");
             interceptorAir.behaviors[0].Cast<FighterMovementModel>().turningSpeed=0.06f;
 			AttackModel interceptorAttack=interceptorBehav.GetModel<AttackModel>();
             interceptorAttack.range=200;
