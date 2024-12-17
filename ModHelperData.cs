@@ -6,6 +6,6 @@ namespace Mothership{
         public const string Description="Adds the Tal'darim Mothership as a custom hero";
         public const string RepoOwner="Onixiya";
         public const string RepoName="Mothership";
-        public const string Dependencies="onixiya/sc2expansion";
+        public const string Dependencies="Onixiya/SC2Expansion";
     }
 }
