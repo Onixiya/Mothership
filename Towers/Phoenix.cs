@@ -14,14 +14,14 @@
 			TowerModel phoenix=gameModel.GetTowerFromId("HeliPilot").Clone<TowerModel>();
 			phoenix.name=Name;
 			phoenix.baseId=phoenix.name;
-			phoenix.targetTypes=new(new TargetType[]{new(){id="Pursuit",isActionable=false,actionOnCreate=false,intID=-1}});
+			phoenix.targetTypes=new(new TargetType[]{new("Pursuit",false,false,false));
             phoenix.TargetTypes=phoenix.targetTypes;
             phoenix.display=new("");
             phoenix.ignoreTowerForSelection=true;
             phoenix.dontDisplayUpgrades=true;
             phoenix.upgrades=new(0);
 			List<Model>phoenixBehav=phoenix.behaviors.ToList();
-			phoenixBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
+			phoenixBehav.Add(new TowerExpireModel("TowerExpireModel",30,9999,false,false));
 			phoenixBehav.GetModel<DisplayModel>().display=phoenix.display;
             phoenixBehav.RemoveModel<CreateSoundOnTowerPlaceModel>();
             AirUnitModel phoenixAir=phoenixBehav.GetModel<AirUnitModel>();
@@ -37,7 +37,7 @@
 			phoenixAttackBehav.RemoveModel<PatrolPointsSettingModel>();
             phoenixAttackBehav.RemoveModel<FollowTouchSettingModel>();
             phoenixAttackBehav.RemoveModel<LockInPlaceSettingModel>();
-            phoenixAttackBehav.Add(new PursuitSettingModel("",false,0,false){name="PursuitSettingModel",isSelectable=false,pursuitDistance=30,isOnSubTower=false});
+            phoenixAttackBehav.Add(new PursuitSettingModel("PursuitSettingModel",false,30,false));
             phoenixAttack.behaviors=phoenixAttackBehav.ToArray();
             WeaponModel phoenixWeapon=phoenixAttack.weapons[0];
             phoenixWeapon.rate=0.35f;

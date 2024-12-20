@@ -133,7 +133,7 @@
             repulsorDamage.damage=1;
             repulsorDamage.immuneBloonProperties=(BloonProperties)8;
 			mothership.behaviors=mothershipBehav.ToArray();
-            SetSounds(mothership,Name,true,true,true,true);
+            SetSounds(mothership,Name+"-",true,true,true,true);
 			return mothership;
         }
 		public TowerModel Level2(){
@@ -199,7 +199,7 @@
             timeWarpProjectileBehav.RemoveModel<CreateEffectOnExhaustedModel>();
 			ProjectileFilterModel timeWarpProjFilter=timeWarpProjectile.behaviors.GetModel<ProjectileFilterModel>();
 			List<FilterModel>timeWarpProjFilterList=timeWarpProjFilter.filters.ToList();
-			timeWarpProjFilterList.Add(new FilterOutTagModel(null,null,null){name="FilterOutTagModel",tag="Moabs",disableWhenSupportMutatorIDs=new(0)});
+			timeWarpProjFilterList.Add(new FilterOutTagModel("FilterOutTagModel","Moabs",new(0)));
             timeWarpProjFilter.filters=timeWarpProjFilterList.ToArray();
             timeWarpProjectile.collisionPasses[0]=-1;
 			SlowModel slowModel=gameModel.GetTowerFromId("GlueGunner-001").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<SlowModel>().Clone<SlowModel>();
@@ -329,7 +329,7 @@
 			mothership.tiers=new(new[]{10,0,0});
             mothership.portrait=new("Ui["+Name+"-Portrait]");
 			mothership.upgrades=new UpgradePathModel[]{new(Name+" Level 11",Name+" 11")};
-            SetSounds(mothership,Name,true,true,true,false);
+            SetSounds(mothership,Name+"-",true,true,true,false);
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add(Name+" Level 10");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
@@ -561,7 +561,7 @@
 			phoenixWarpProj.display=new("Phoenix-WarpPrefab");
 			Il2CppReferenceArray<Model>phoenixWarpProjBehav=phoenixWarpProj.behaviors;
 			phoenixWarpProjBehav.GetModel<DisplayModel>().display=new(phoenixWarpProj.display.guidRef);
-            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("SC2Phoenix");
+            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("PhoenixSC2");
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
 			AbilityModel deathFleet=mothershipBehav.GetModel<AbilityModel>("Death Fleet");
             deathFleet.cooldown-=30;
@@ -585,5 +585,9 @@
 			mothership.behaviors=mothershipBehav.ToArray();
 			return mothership;
 		}
+        public override bool Ability(string ability,Tower tower){
+            PlayAnimation(tower.Node.graphic.GetComponent<Animator>(),"Ability",0);
+			return true;
+        }
 	}
 }

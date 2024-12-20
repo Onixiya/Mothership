@@ -20,11 +20,11 @@
             interceptor.isSubTower=true;
             interceptor.upgrades=new(0);
 			List<Model>interceptorBehav=interceptor.behaviors.ToList();
-            interceptorBehav.Add(new TowerExpireOnParentDestroyedModel(""){name="TowerExpireOnParentDestroyedModel"});
+            interceptorBehav.Add(new TowerExpireOnParentDestroyedModel("TowerExpireOnParentDestroyedModel"));
             interceptorBehav.RemoveModel<CreateEffectOnPlaceModel>();
             interceptorBehav.RemoveModel<CreateSoundOnTowerPlaceModel>();
             interceptorBehav.RemoveModel<PlayAnimationIndexModel>();
-            TowerModel plane = gameModel.GetTowerFromId("MonkeyBuccaneer-400").behaviors.GetModel<AttackModel>("Spawner").
+            TowerModel plane=gameModel.GetTowerFromId("MonkeyBuccaneer-400").behaviors.GetModel<AttackModel>("Spawner").
                 weapons[0].projectile.behaviors.GetModel<CreateTowerModel>().tower.Clone<TowerModel>();
 			interceptorBehav.Add(plane.behaviors.GetModel<AirUnitModel>());
             AirUnitModel interceptorAir=interceptorBehav.GetModel<AirUnitModel>();
@@ -41,7 +41,7 @@
             interceptorAttackFilter.filters=planeAttack.behaviors.GetModel<AttackFilterModel>().filters;
             interceptorAttackFilter.filters[0].Cast<FilterTargetAngleModel>().fieldOfView=20;
 			WeaponModel interceptorWeapon=interceptorAttack.weapons[0];
-			interceptorWeapon.behaviors=new List<WeaponBehaviorModel>(){new FireFromAirUnitModel(""){name="FireFromAirUnitModel"}}.ToArray();
+			interceptorWeapon.behaviors=new List<WeaponBehaviorModel>(){new FireFromAirUnitModel("FireFromAirUnitModel")}.ToArray();
             interceptorWeapon.rate=0.08f;
             interceptorWeapon.emission=planeAttack.weapons[0].emission;
 			ProjectileModel interceptorProjectile=interceptorWeapon.projectile;

@@ -26,18 +26,18 @@
 			DisplayModel display=carrierBehav.GetModel<DisplayModel>();
             display.display=carrier.display;
             display.positionOffset=new(0,-10,190);
-			carrierBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
+			carrierBehav.Add(new TowerExpireModel("TowerExpireModel",30,9999,false,false));
             carrierBehav.RemoveModel<AttackModel>();
             carrierBehav.Add(SelectedSoundModel);
             carrierBehav.Add(gameModel.GetTowerFromId("MonkeyBuccaneer-400").behaviors.GetModel<AttackModel>("Spawner").Clone<AttackModel>());
             WeaponModel carrierWeapon=carrierBehav.GetModel<AttackModel>().weapons[0];
-            SubTowerFilterModel carrierFilter=carrierWeapon.behaviors.First(a=>a.GetIl2CppType().Name=="SubTowerFilterModel").Cast<SubTowerFilterModel>();
+            SubTowerFilterModel carrierFilter=carrierWeapon.behaviors.GetModel<SubTowerFilterModel>();
             carrierFilter.maxNumberOfSubTowers=8;
             carrierFilter.baseSubTowerId="Interceptor";
             carrierFilter.baseSubTowerIds[0]="Interceptor";
             carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Interceptor");
 			carrier.behaviors=carrierBehav.ToArray();
-            SetSounds(carrier,Name,false,true,false,false);
+            SetSounds(carrier,Name+"-",false,true,false,false);
 			return carrier;
         }
     }

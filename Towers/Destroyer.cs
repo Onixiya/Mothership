@@ -23,7 +23,7 @@
             destroyer.portrait=new("Ui["+Name+"-Portrait]");
 			List<Model>destroyerBehav=destroyer.behaviors.ToList();
             destroyerBehav.Add(SelectedSoundModel);
-			destroyerBehav.Add(new TowerExpireModel("",0,0,false,false){name="TowerExpireModel",lifespan=30,rounds=9999,expireOnDefeatScreen=false,expireOnRoundComplete=false});
+			destroyerBehav.Add(new TowerExpireModel("TowerExpireModel",30,9999,false,false));
             DisplayModel display=destroyerBehav.GetModel<DisplayModel>();
 			display.display=destroyer.display;
             display.positionOffset=new(0,0,190);
@@ -42,7 +42,7 @@
             beamBehav.GetModel<DamageModel>().damage=0.45f;
             beamBehav.GetModel<CreateLightningEffectModel>().lifeSpan=0.1f;
 			destroyer.behaviors=destroyerBehav.ToArray();
-            SetSounds(destroyer,Name,true,true,false,false);
+            SetSounds(destroyer,Name+"-",true,true,false,false);
 			return destroyer;
         }
     }
