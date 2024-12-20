@@ -14,7 +14,7 @@
 			TowerModel phoenix=gameModel.GetTowerFromId("HeliPilot").Clone<TowerModel>();
 			phoenix.name=Name;
 			phoenix.baseId=phoenix.name;
-			phoenix.targetTypes=new(new TargetType[]{new("Pursuit",false,false,false));
+			phoenix.targetTypes=new(new TargetType[]{new("Pursuit",false,false,false)});
             phoenix.TargetTypes=phoenix.targetTypes;
             phoenix.display=new("");
             phoenix.ignoreTowerForSelection=true;
