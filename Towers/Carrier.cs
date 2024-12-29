@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Carrier:SC2Tower{
-        public override string Name=>"Carrier";
+        public override string Name=>"TaldarimCarrier";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
         public override int Order=>1;
@@ -14,6 +14,7 @@
 		}
         public TowerModel Base(){
 			TowerModel carrier=gameModel.GetTowerFromId("DartMonkey").Clone<TowerModel>();
+            carrier.mods=new(0);
 			carrier.name=Name;
 			carrier.baseId=Name;
             carrier.display=new(Name+"-Prefab");
@@ -33,11 +34,12 @@
             WeaponModel carrierWeapon=carrierBehav.GetModel<AttackModel>().weapons[0];
             SubTowerFilterModel carrierFilter=carrierWeapon.behaviors.GetModel<SubTowerFilterModel>();
             carrierFilter.maxNumberOfSubTowers=8;
-            carrierFilter.baseSubTowerId="Interceptor";
-            carrierFilter.baseSubTowerIds[0]="Interceptor";
-            carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Interceptor");
+            carrierFilter.baseSubTowerId="TaldarimInterceptor";
+            carrierFilter.baseSubTowerIds[0]="TaldarimInterceptor";
+            carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("TaldarimInterceptor");
 			carrier.behaviors=carrierBehav.ToArray();
             SetSounds(carrier,Name+"-",false,true,false,false);
+            LocManager.textTable.Add("TaldarimCarrier","Tal'darim Carrier");
 			return carrier;
         }
     }

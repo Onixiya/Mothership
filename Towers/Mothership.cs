@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Mothership:SC2Tower{
-        public override string Name=>"Mothership";
+        public override string Name=>"TaldarimMothership";
         public override Faction TowerFaction=>Faction.Protoss;
 		public override bool ShowUpgradeMenu=>false;
 		public override bool AddToShop=>false;
@@ -47,6 +47,7 @@
 		//am tempted to turn some of this into how mod helper does it to avoid hard coding it like this
 		//but i don't want to make it seem like i'm copying how it does it one for one
 		public override HeroDetailsModel GenerateHeroDetails(){
+            LocManager.textTable.Add(Name,"Tal'darim Mothership");
 			LocManager.textTable.Add(Name+" Description","Capital ships often found leading the Tal'darim Death Fleet");
             LocManager.textTable.Add(Name+" Short Description","Capital Ship");
 			LocManager.textTable.Add(Name+" Level 1 Description","Fires charged psionic bolts at bloons");
@@ -101,6 +102,7 @@
 		}
         public TowerModel Base(){
 			TowerModel mothership=gameModel.GetTowerFromId("WizardMonkey").Clone<TowerModel>();
+            mothership.mods=new(0);
 			mothership.baseId=Name;
 			mothership.name=Name;
 			mothership.portrait=new("Ui["+Name+"-CorePortrait]");
@@ -462,10 +464,10 @@
 			WeaponModel destroyerWarpWeapon=destroyerWarp.weapons[0];
             destroyerWarpWeapon.rate=0.025f;
 			ProjectileModel destroyerWarpProj=destroyerWarpWeapon.projectile;
-            destroyerWarpProj.display=new("Destroyer-WarpPrefab");
+            destroyerWarpProj.display=new("TaldarimDestroyer-WarpPrefab");
 			Il2CppReferenceArray<Model>destroyerWarpProjBehav=destroyerWarpProj.behaviors;
             destroyerWarpProjBehav.GetModel<DisplayModel>().display=new(destroyerWarpProj.display.guidRef);
-            destroyerWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("Destroyer");
+            destroyerWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("TaldarimDestroyer");
 			AbilityModel deathFleet=BlankAbilityModel;
 			deathFleet.name="Death Fleet";
             deathFleet.icon=new("Ui["+Name+"-DeathFleetIcon]");
@@ -547,10 +549,10 @@
 			WeaponModel carrierWarpWeapon=carrierWarp.weapons[0];
             carrierWarpWeapon.rate=0.06f;
 			ProjectileModel carrierWarpProj=carrierWarpWeapon.projectile;
-			carrierWarpProj.display=new("Carrier-WarpPrefab");
+			carrierWarpProj.display=new("TaldarimCarrier-WarpPrefab");
 			Il2CppReferenceArray<Model>carrierWarpProjBehav=carrierWarpProj.behaviors;
 			carrierWarpProjBehav.GetModel<DisplayModel>().display=new(carrierWarpProj.display.guidRef);
-			TowerModel carrierTower=gameModel.GetTowerFromId("Carrier");
+			TowerModel carrierTower=gameModel.GetTowerFromId("TaldarimCarrier");
             carrierWarpProjBehav.GetModel<CreateTowerModel>().tower=carrierTower;
 			AttackModel phoenixWarp=CreateTowerAttackModel.Clone<AttackModel>();
             phoenixWarp.name="PhoenixWarp";
@@ -558,10 +560,10 @@
 			WeaponModel phoenixWarpWeapon=phoenixWarp.weapons[0];
             phoenixWarpWeapon.rate=0.025f;
 			ProjectileModel phoenixWarpProj=phoenixWarpWeapon.projectile;
-			phoenixWarpProj.display=new("Phoenix-WarpPrefab");
+			phoenixWarpProj.display=new("TaldarimPhoenix-WarpPrefab");
 			Il2CppReferenceArray<Model>phoenixWarpProjBehav=phoenixWarpProj.behaviors;
 			phoenixWarpProjBehav.GetModel<DisplayModel>().display=new(phoenixWarpProj.display.guidRef);
-            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("PhoenixSC2");
+            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("TaldarimPhoenix");
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
 			AbilityModel deathFleet=mothershipBehav.GetModel<AbilityModel>("Death Fleet");
             deathFleet.cooldown-=30;

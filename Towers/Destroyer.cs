@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Destroyer:SC2Tower{
-        public override string Name=>"Destroyer";
+        public override string Name=>"TaldarimDestroyer";
         public override bool AddToShop=>false;
         public override Faction TowerFaction=>Faction.Protoss;
 		public override bool Upgradable=>false;
@@ -13,6 +13,7 @@
 		}
         public TowerModel Base(){
 			TowerModel destroyer=gameModel.GetTowerFromId("DartMonkey").Clone<TowerModel>();
+            destroyer.mods=new(0);
 			destroyer.name=Name;
 			destroyer.baseId=Name;
 			destroyer.radius=15;
@@ -43,6 +44,7 @@
             beamBehav.GetModel<CreateLightningEffectModel>().lifeSpan=0.1f;
 			destroyer.behaviors=destroyerBehav.ToArray();
             SetSounds(destroyer,Name+"-",true,true,false,false);
+            LocManager.textTable.Add("TaldarimDestroyer","Tal'darim Destroyer");
 			return destroyer;
         }
     }

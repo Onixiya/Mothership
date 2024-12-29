@@ -1,6 +1,6 @@
 ﻿namespace Mothership{
     public class Phoenix:SC2Tower{
-        public override string Name=>"PhoenixSC2";
+        public override string Name=>"TaldarimPhoenix";
         public override bool AddToShop=>false;
 		public override bool Upgradable=>false;
 		public override Faction TowerFaction=>Faction.Protoss;
@@ -12,6 +12,7 @@
 		}
         public TowerModel Base(){
 			TowerModel phoenix=gameModel.GetTowerFromId("HeliPilot").Clone<TowerModel>();
+            phoenix.mods=new(0);
 			phoenix.name=Name;
 			phoenix.baseId=phoenix.name;
 			phoenix.targetTypes=new(new TargetType[]{new("Pursuit",false,false,false)});
