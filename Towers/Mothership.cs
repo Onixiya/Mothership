@@ -118,7 +118,7 @@
 			mothership.upgrades=new UpgradePathModel[]{new(Name+" Level 2",Name+" 2")};
 			mothership.appliedUpgrades=new(0);
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
-            mothershipBehav.Add(SelectedSoundModel);
+            mothershipBehav.Add(SelectedSoundModel.Clone<CreateSoundOnSelectedModel>());
 			DisplayModel mothershipDisplay=mothershipBehav.GetModel<DisplayModel>();
             mothershipDisplay.positionOffset=new(0,0,200);
             mothershipDisplay.display=new(mothership.display.guidRef);
@@ -172,7 +172,7 @@
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add(Name+" Level 4");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			AbilityModel timeWarp=BlankAbilityModel;
+			AbilityModel timeWarp=BlankAbilityModel.Clone<AbilityModel>();
             timeWarp.name="Time Warp";
             timeWarp.displayName=timeWarp.name;
             timeWarp.description=LocManager.GetText(Name+" Level 4 Description").Split(':')[1].Remove(0,1);
@@ -276,7 +276,7 @@
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add(Name+" Level 8");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			AbilityModel blink=BlankAbilityModel;
+			AbilityModel blink=BlankAbilityModel.Clone<AbilityModel>();
 			List<Model>blinkBehav=blink.behaviors.ToList();
             blinkBehav.Add(gameModel.GetTowerFromId("SuperMonkey-003").behaviors.GetModel<AbilityModel>().behaviors.GetModel<DarkshiftModel>().Clone<DarkshiftModel>());
 			blink.behaviors=blinkBehav.ToArray();
@@ -458,7 +458,7 @@
 			List<string>appliedUpgrades=mothership.appliedUpgrades.ToList();
 			appliedUpgrades.Add(Name+" Level 16");
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
-			AttackModel destroyerWarp=CreateTowerAttackModel;
+			AttackModel destroyerWarp=CreateTowerAttackModel.Clone<AttackModel>();
             destroyerWarp.name="DestroyerWarp";
             destroyerWarp.range=mothership.range;
 			WeaponModel destroyerWarpWeapon=destroyerWarp.weapons[0];
@@ -467,8 +467,8 @@
             destroyerWarpProj.display=new("TaldarimDestroyer-WarpPrefab");
 			Il2CppReferenceArray<Model>destroyerWarpProjBehav=destroyerWarpProj.behaviors;
             destroyerWarpProjBehav.GetModel<DisplayModel>().display=new(destroyerWarpProj.display.guidRef);
-            destroyerWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("TaldarimDestroyer");
-			AbilityModel deathFleet=BlankAbilityModel;
+            destroyerWarpProjBehav.GetModel<CreateTowerModel>().tower=TowerTypes["TaldarimDestroyer"].TowerModels[0];
+			AbilityModel deathFleet=BlankAbilityModel.Clone<AbilityModel>();
 			deathFleet.name="Death Fleet";
             deathFleet.icon=new("Ui["+Name+"-DeathFleetIcon]");
             deathFleet.displayName="Summon Death Fleet";
@@ -552,7 +552,7 @@
 			carrierWarpProj.display=new("TaldarimCarrier-WarpPrefab");
 			Il2CppReferenceArray<Model>carrierWarpProjBehav=carrierWarpProj.behaviors;
 			carrierWarpProjBehav.GetModel<DisplayModel>().display=new(carrierWarpProj.display.guidRef);
-			TowerModel carrierTower=gameModel.GetTowerFromId("TaldarimCarrier");
+			TowerModel carrierTower=TowerTypes["TaldarimCarrier"].TowerModels[0];
             carrierWarpProjBehav.GetModel<CreateTowerModel>().tower=carrierTower;
 			AttackModel phoenixWarp=CreateTowerAttackModel.Clone<AttackModel>();
             phoenixWarp.name="PhoenixWarp";
@@ -563,7 +563,7 @@
 			phoenixWarpProj.display=new("TaldarimPhoenix-WarpPrefab");
 			Il2CppReferenceArray<Model>phoenixWarpProjBehav=phoenixWarpProj.behaviors;
 			phoenixWarpProjBehav.GetModel<DisplayModel>().display=new(phoenixWarpProj.display.guidRef);
-            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("TaldarimPhoenix");
+            phoenixWarpProjBehav.GetModel<CreateTowerModel>().tower=TowerTypes["TaldarimPhoenix"].TowerModels[0];
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
 			AbilityModel deathFleet=mothershipBehav.GetModel<AbilityModel>("Death Fleet");
             deathFleet.cooldown-=30;
@@ -582,7 +582,7 @@
             }
 			mothershipBehav.RemoveModel("Time Warp");
             mothershipBehav.Add(timeWarp);
-            mothershipBehav.Add(carrierTower.behaviors.GetModel<AttackModel>().Clone<AttackModel>());
+            mothershipBehav.Add(carrierTower.behaviors.GetModel<AttackModel>().Clone());
             mothershipBehav.GetModel<AbilityModel>("Blink").cooldown-=10;
 			mothership.behaviors=mothershipBehav.ToArray();
 			return mothership;

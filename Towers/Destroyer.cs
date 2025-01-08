@@ -34,7 +34,7 @@
             ProjectileModel destroyerProj=destroyerAttack.weapons[0].projectile;
 			List<Model>destroyerProjBehav=destroyerProj.behaviors.ToList();
             destroyerProjBehav.GetModel<DamageModel>().damage=0.6f;
-            destroyerProjBehav.Add(gameModel.GetTowerFromId("BombShooter").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<CreateProjectileOnContactModel>());
+            destroyerProjBehav.Add(gameModel.GetTowerFromId("BombShooter").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<CreateProjectileOnContactModel>().Clone<CreateProjectileOnContactModel>());
             destroyerProjBehav.GetModel<CreateProjectileOnContactModel>().projectile=gameModel.GetTowerFromId("Druid-200").behaviors.GetModel<AttackModel>().weapons[1].projectile.Clone<ProjectileModel>();
             Il2CppReferenceArray<Model>beamBehav=destroyerProjBehav.GetModel<CreateProjectileOnContactModel>().projectile.behaviors;
             LightningModel lightning=beamBehav.GetModel<LightningModel>();

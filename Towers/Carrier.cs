@@ -36,7 +36,7 @@
             carrierFilter.maxNumberOfSubTowers=8;
             carrierFilter.baseSubTowerId="TaldarimInterceptor";
             carrierFilter.baseSubTowerIds[0]="TaldarimInterceptor";
-            carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=gameModel.GetTowerFromId("TaldarimInterceptor");
+            carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=TowerTypes["TaldarimInterceptor"].TowerModels[0];
 			carrier.behaviors=carrierBehav.ToArray();
             SetSounds(carrier,Name+"-",false,true,false,false);
             LocManager.textTable.Add("TaldarimCarrier","Tal'darim Carrier");
