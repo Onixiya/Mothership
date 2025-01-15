@@ -24,13 +24,17 @@
             carrier.dontDisplayUpgrades=true;
 			carrier.upgrades=new(0);
 			List<Model>carrierBehav=carrier.behaviors.ToList();
+            carrierBehav.RemoveModel<CreateSoundOnUpgradeModel>();
+            carrierBehav.RemoveModel<CreateEffectOnUpgradeModel>();
+            carrierBehav.RemoveModel<CreateSoundOnTowerPlaceModel>();
+            carrierBehav.Add(SelectedSoundModel.Clone());
 			DisplayModel display=carrierBehav.GetModel<DisplayModel>();
             display.display=carrier.display;
             display.positionOffset=new(0,-10,190);
 			carrierBehav.Add(new TowerExpireModel("TowerExpireModel",30,9999,false,false));
             carrierBehav.RemoveModel<AttackModel>();
             carrierBehav.Add(SelectedSoundModel);
-            carrierBehav.Add(gameModel.GetTowerFromId("MonkeyBuccaneer-400").behaviors.GetModel<AttackModel>("Spawner").Clone<AttackModel>());
+            carrierBehav.Add(gameModel.GetTowerFromId("MonkeyBuccaneer-400").behaviors.GetModelClone<AttackModel>("Spawner"));
             WeaponModel carrierWeapon=carrierBehav.GetModel<AttackModel>().weapons[0];
             SubTowerFilterModel carrierFilter=carrierWeapon.behaviors.GetModel<SubTowerFilterModel>();
             carrierFilter.maxNumberOfSubTowers=8;
@@ -39,7 +43,7 @@
             carrierWeapon.projectile.behaviors.GetModel<CreateTowerModel>().tower=TowerTypes["TaldarimInterceptor"].TowerModels[0];
 			carrier.behaviors=carrierBehav.ToArray();
             SetSounds(carrier,Name+"-",false,true,false,false);
-            LocManager.textTable.Add("TaldarimCarrier","Tal'darim Carrier");
+            LocManager.textTable.Add(Name,"Tal'darim Carrier");
 			return carrier;
         }
     }

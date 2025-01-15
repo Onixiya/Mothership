@@ -118,7 +118,7 @@
 			mothership.upgrades=new UpgradePathModel[]{new(Name+" Level 2",Name+" 2")};
 			mothership.appliedUpgrades=new(0);
 			List<Model>mothershipBehav=mothership.behaviors.ToList();
-            mothershipBehav.Add(SelectedSoundModel.Clone<CreateSoundOnSelectedModel>());
+            mothershipBehav.Add(SelectedSoundModel.Clone());
 			DisplayModel mothershipDisplay=mothershipBehav.GetModel<DisplayModel>();
             mothershipDisplay.positionOffset=new(0,0,200);
             mothershipDisplay.display=new(mothership.display.guidRef);
@@ -179,13 +179,13 @@
 			timeWarp.icon=new("Ui["+Name+"-TimeWarpIcon]");
 			timeWarp.addedViaUpgrade=Name+" Level 4";
 			List<Model>timeWarpBehav=timeWarp.behaviors.ToList();
-            timeWarpBehav.Add(gameModel.GetTowerFromId("SuperMonkey-040").behaviors.GetModel<AbilityModel>().behaviors.GetModel<ActivateAttackModel>().Clone<ActivateAttackModel>());
+            timeWarpBehav.Add(gameModel.GetTowerFromId("SuperMonkey-040").behaviors.GetModel<AbilityModel>().behaviors.GetModelClone<ActivateAttackModel>());
             string s1=Name+"-"+new System.Random().Next(1,10);
             string s2=Name+"-"+new System.Random().Next(1,10);
             timeWarpBehav.Add(new CreateSoundOnAbilityModel(Name+"-TimeWarp",null,new(s1,new(s1)),new(s2,new(s2))));
             ActivateAttackModel timeWarpActivateAttack=timeWarpBehav.GetModel<ActivateAttackModel>();
             timeWarpActivateAttack.turnOffExisting=false;
-			AttackModel timeWarpAttack=gameModel.GetTowerFromId("WizardMonkey-020").behaviors.GetModel<AttackModel>("Wall").Clone<AttackModel>();
+			AttackModel timeWarpAttack=gameModel.GetTowerFromId("WizardMonkey-020").behaviors.GetModelClone<AttackModel>("Wall");
             timeWarpActivateAttack.attacks[0]=timeWarpAttack;
             timeWarpAttack.name="Time Warp";
             timeWarpAttack.range=mothership.range;
@@ -204,7 +204,7 @@
 			timeWarpProjFilterList.Add(new FilterOutTagModel("FilterOutTagModel","Moabs",new(0)));
             timeWarpProjFilter.filters=timeWarpProjFilterList.ToArray();
             timeWarpProjectile.collisionPasses[0]=-1;
-			SlowModel slowModel=gameModel.GetTowerFromId("GlueGunner-001").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<SlowModel>().Clone<SlowModel>();
+			SlowModel slowModel=gameModel.GetTowerFromId("GlueGunner-001").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModelClone<SlowModel>();
 			timeWarpProjectileBehav.Add(slowModel);
 			timeWarpProjectile.behaviors=timeWarpProjectileBehav.ToArray();
             slowModel.mutationId="TimeWarp-Slow";
@@ -278,7 +278,7 @@
 			mothership.appliedUpgrades=appliedUpgrades.ToArray();
 			AbilityModel blink=BlankAbilityModel.Clone<AbilityModel>();
 			List<Model>blinkBehav=blink.behaviors.ToList();
-            blinkBehav.Add(gameModel.GetTowerFromId("SuperMonkey-003").behaviors.GetModel<AbilityModel>().behaviors.GetModel<DarkshiftModel>().Clone<DarkshiftModel>());
+            blinkBehav.Add(gameModel.GetTowerFromId("SuperMonkey-003").behaviors.GetModel<AbilityModel>().behaviors.GetModelClone<DarkshiftModel>());
 			blink.behaviors=blinkBehav.ToArray();
             DarkshiftModel teleModel=blink.behaviors.GetModel<DarkshiftModel>();
             blink.name="Blink";
@@ -475,7 +475,7 @@
             deathFleet.cooldown=80;
             deathFleet.addedViaUpgrade=Name+" Level 16";
 			List<Model>deathFleetBehav=deathFleet.behaviors.ToList();
-            deathFleetBehav.Add(gameModel.GetTowerFromId("SuperMonkey-040").behaviors.GetModel<AbilityModel>().behaviors.GetModel<ActivateAttackModel>().Clone<ActivateAttackModel>());
+            deathFleetBehav.Add(gameModel.GetTowerFromId("SuperMonkey-040").behaviors.GetModel<AbilityModel>().behaviors.GetModelClone<ActivateAttackModel>());
             deathFleetBehav.Add(new CreateSoundOnAbilityModel(Name+"-DeathFleet",null,
                 new(Name+"-Ability1",new(Name+"-Ability2")),new(Name+"-Ability2",new(Name+"-Ability2"))));
 			ActivateAttackModel deathFleetAttack=deathFleetBehav.GetModel<ActivateAttackModel>();
@@ -582,7 +582,7 @@
             }
 			mothershipBehav.RemoveModel("Time Warp");
             mothershipBehav.Add(timeWarp);
-            mothershipBehav.Add(carrierTower.behaviors.GetModel<AttackModel>().Clone());
+            mothershipBehav.Add(carrierTower.behaviors.GetModelClone<AttackModel>());
             mothershipBehav.GetModel<AbilityModel>("Blink").cooldown-=10;
 			mothership.behaviors=mothershipBehav.ToArray();
 			return mothership;

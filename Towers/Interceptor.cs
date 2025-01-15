@@ -22,6 +22,8 @@
             interceptor.upgrades=new(0);
 			List<Model>interceptorBehav=interceptor.behaviors.ToList();
             interceptorBehav.Add(new TowerExpireOnParentDestroyedModel("TowerExpireOnParentDestroyedModel"));
+            interceptorBehav.RemoveModel<CreateSoundOnUpgradeModel>();
+            interceptorBehav.RemoveModel<CreateEffectOnUpgradeModel>();
             interceptorBehav.RemoveModel<CreateEffectOnPlaceModel>();
             interceptorBehav.RemoveModel<CreateSoundOnTowerPlaceModel>();
             interceptorBehav.RemoveModel<PlayAnimationIndexModel>();

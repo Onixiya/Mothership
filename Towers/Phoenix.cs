@@ -24,6 +24,8 @@
 			List<Model>phoenixBehav=phoenix.behaviors.ToList();
 			phoenixBehav.Add(new TowerExpireModel("TowerExpireModel",30,9999,false,false));
 			phoenixBehav.GetModel<DisplayModel>().display=phoenix.display;
+            phoenixBehav.RemoveModel<CreateSoundOnUpgradeModel>();
+            phoenixBehav.RemoveModel<CreateEffectOnUpgradeModel>();
             phoenixBehav.RemoveModel<CreateSoundOnTowerPlaceModel>();
             AirUnitModel phoenixAir=phoenixBehav.GetModel<AirUnitModel>();
 			phoenixAir.display=new(Name+"-Prefab");

@@ -23,7 +23,9 @@
 			destroyer.upgrades=new(0);
             destroyer.portrait=new("Ui["+Name+"-Portrait]");
 			List<Model>destroyerBehav=destroyer.behaviors.ToList();
-            destroyerBehav.Add(SelectedSoundModel);
+            destroyerBehav.RemoveModel<CreateSoundOnUpgradeModel>();
+            destroyerBehav.RemoveModel<CreateEffectOnUpgradeModel>();
+            destroyerBehav.Add(SelectedSoundModel.Clone());
 			destroyerBehav.Add(new TowerExpireModel("TowerExpireModel",30,9999,false,false));
             DisplayModel display=destroyerBehav.GetModel<DisplayModel>();
 			display.display=destroyer.display;
@@ -34,7 +36,7 @@
             ProjectileModel destroyerProj=destroyerAttack.weapons[0].projectile;
 			List<Model>destroyerProjBehav=destroyerProj.behaviors.ToList();
             destroyerProjBehav.GetModel<DamageModel>().damage=0.6f;
-            destroyerProjBehav.Add(gameModel.GetTowerFromId("BombShooter").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModel<CreateProjectileOnContactModel>().Clone<CreateProjectileOnContactModel>());
+            destroyerProjBehav.Add(gameModel.GetTowerFromId("BombShooter").behaviors.GetModel<AttackModel>().weapons[0].projectile.behaviors.GetModelClone<CreateProjectileOnContactModel>());
             destroyerProjBehav.GetModel<CreateProjectileOnContactModel>().projectile=gameModel.GetTowerFromId("Druid-200").behaviors.GetModel<AttackModel>().weapons[1].projectile.Clone<ProjectileModel>();
             Il2CppReferenceArray<Model>beamBehav=destroyerProjBehav.GetModel<CreateProjectileOnContactModel>().projectile.behaviors;
             LightningModel lightning=beamBehav.GetModel<LightningModel>();
